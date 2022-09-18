@@ -10,6 +10,12 @@
             >
           </b-input-group>
         </b-col>
+        <b-col>
+          Filter:
+          <b-dropdown id="dropdown-1" text="Category" class="m-md-2">
+            <b-dropdown-item>category1</b-dropdown-item>
+          </b-dropdown>
+        </b-col>
         <b-col><b-button href="#" variant="primary">Add Item</b-button></b-col>
       </b-row>
       <b-row>
@@ -43,7 +49,9 @@
               Some quick example text to build on the card title and make up the
               bulk of the card's content.
             </b-card-text>
-            <b-button href="#" variant="primary">Add Stock</b-button>
+            <b-col
+              ><b-button href="#" variant="primary">Add Stock</b-button></b-col
+            >
             <b-button href="#" variant="primary">Edit Item</b-button>
           </b-card>
         </div>

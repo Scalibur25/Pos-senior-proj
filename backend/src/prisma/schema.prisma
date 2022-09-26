@@ -1,0 +1,77 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Address {
+  zipcode     Int     @id
+  subdistrict String
+  district    String
+  province    String
+  Order       Order[]
+}
+
+model Order {
+  orderId        String   @id @default(uuid())
+  createAt       DateTime @default(now())
+  paidAt         DateTime
+  picPaid        String
+  address1       String
+  address2       String?
+  addressZipcode Int
+
+  zipcode Address @relation(fields: [addressZipcode], references: [zipcode])
+
+  itemList itemList[]
+}
+
+model itemList {
+  note            String
+  markupDirection String
+  markupUnit      String
+  markupAmount    String
+  quantity        Int
+  orderId         String
+  itemId          String
+
+  Item    item  @relation(fields: [itemId], references: [id])
+  OrderId Order @relation(fields: [orderId], references: [orderId])
+
+  @@unique([orderId, itemId])
+}
+
+model item {
+  id          String  @id @default(uuid())
+  price       Int
+  cost        Int
+  unit        String
+  description String?
+  status      String
+  quantity    Int
+
+  category category[]
+  stock    stock[]
+  itemList itemList[]
+}
+
+model stock {
+  id       String   @id @default(uuid())
+  amount   Int
+  note     String?
+  updateAt DateTime @updatedAt
+  itemId   String
+
+  item item @relation(fields: [itemId], references: [id])
+}
+
+model category {
+  id          String  @id @default(uuid())
+  name        String
+  description String?
+
+  item item[]
+}

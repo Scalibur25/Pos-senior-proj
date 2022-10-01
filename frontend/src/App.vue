@@ -4,7 +4,7 @@
       <div id="essist">ESSIST</div>
       <router-link to="/">Home</router-link>
       <span>|</span>
-      <router-link to="/about">About</router-link>
+      <router-link to="/stock">Stock Management</router-link>
       <span>|</span>
       <router-link to="/storefront">Storefront</router-link>
     </nav>

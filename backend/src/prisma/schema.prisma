@@ -49,6 +49,8 @@ model item {
   price       Int
   cost        Int
   unit        String
+  name        String
+  pic         String
   description String?
   status      String
   quantity    Int

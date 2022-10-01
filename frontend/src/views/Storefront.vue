@@ -51,25 +51,6 @@
             </div>
           </b-card>
           <b-card
-            img-src="https://picsum.photos/600/300/?image=25"
-            img-alt="Image"
-            img-top
-            tag="article"
-            class="mb-2 menu--b-card"
-          >
-            <b-card-title>เค้กสักอย่าง</b-card-title>
-            <div class="card--price">
-              <span class="me-2">Price:</span>
-              <span class="bold bigger">50.00</span>
-              <span class="mx-2">/</span>
-              <span>หน่วย</span>
-            </div>
-            <div>
-              <span class="me-2">In-stock:</span>
-              <span>20</span>
-            </div>
-          </b-card>
-          <b-card
             title="Card Title"
             img-src="https://picsum.photos/600/300/?image=25"
             img-alt="Image"
@@ -121,7 +102,7 @@
           </b-card>
         </div>
       </b-col>
-      <b-col cols="4" class="">
+      <b-col cols="4" class="col--2">
         <b-list-group class="item-list">
           <b-list-group-item
             class="d-flex align-items-center justify-content-between"
@@ -144,16 +125,31 @@
             <span>50.00</span>
           </b-list-group-item>
         </b-list-group>
-        <div class="total mx-2 my-4">
+        <b-button
+          class="buttons--submit mt-3 d-flex align-items-center justify-content-between"
+          variant="success"
+        >
+          <span>Total</span>
+          <span class="bold bigger">1500.00</span>
+          <span>SUBMIT ORDER</span>
+        </b-button>
+        <b-button class="buttons--preview mt-3" variant="outline-secondary">
+          Preview Receipt
+        </b-button>
+
+        <!-- <div class="total mx-2 my-4">
           <span class="me-3">Total :</span>
           <span class="bold bigger">1500.00</span>
         </div>
-        <div class="d-flex align-items-center justify-content-between">
-          <b-button class="button--preview me-1">Preview Receipt</b-button>
-          <b-button variant="success" size="lg" class="button--submit bold"
+        <div class="buttons d-flex align-items-center justify-content-between">
+          <b-button
+            variant="success"
+            size="lg"
+            class="buttons--submit bold me-1"
             >SUBMIT ORDER</b-button
           >
-        </div>
+          <b-button class="buttons--preview">Preview Receipt</b-button>
+        </div> -->
 
         <!-- <div class="total d-flex align-items-center justify-content-between">
           <span class="total--1 d-none d-md-flex">Total</span>
@@ -176,10 +172,6 @@ export default {
 };
 </script>
 <style>
-.button--submit {
-  height: 60px;
-  width: 250px;
-}
 .search-bar {
   position: sticky;
   top: 120px;
@@ -188,11 +180,16 @@ export default {
 }
 .menu {
   z-index: 1;
+  max-width: 1000px;
 }
 .menu--b-card {
   margin: 6px;
   /* width: 14rem; */
-  max-width: 24rem;
+  max-width: 20rem;
+}
+.col--2 {
+  position: fixed;
+  right: 50px;
 }
 .item-list {
   /* margin-top: 6px; */
@@ -206,9 +203,12 @@ export default {
   padding: 10px;
   width: 100%;
 }
-
-.total {
-  /* font-size: 1.5em; */
+.buttons--preview {
+  width: 200px;
+}
+.buttons--submit {
+  height: 60px;
+  width: 100%;
 }
 .bold {
   font-weight: bold;

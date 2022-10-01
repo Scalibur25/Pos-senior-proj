@@ -6,7 +6,7 @@
       <span>|</span>
       <router-link to="/stock">Stock Management</router-link>
       <span>|</span>
-      <router-link to="/storefront">Storefront</router-link>
+      <router-link to="/store">Storefront</router-link>
     </nav>
     <router-view class="router-view" />
   </div>

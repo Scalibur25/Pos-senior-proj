@@ -90,7 +90,7 @@
             ></b-form-input>
           </b-form-group>
 
-          <b-form-group id="input-image" label="image:" label-for="input-image">
+          <b-form-group id="input-image" label="Image:" label-for="input-image">
             <b-form-input
               id="input-image"
               v-model="form.pic"

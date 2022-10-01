@@ -1,0 +1,32 @@
+version: "3.4"
+
+services:
+  server:
+    build: ./src
+    image: "pos/server"
+    volumes:
+      - upload:/app/data/upload
+      - log:/app/log
+      - ./devlab-server/src:/app/src
+    env_file: ./src/prod.env
+    ports:
+      - 3000:3000
+    restart: always
+
+  db:
+    image: mariadb:10.5.10-focal
+    volumes:
+      - database:/var/lib/mysql
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_DATABASE=root
+      - MYSQL_ROOT_PASSWORD=changeme
+      - MYSQL_USER=dbuser
+      - MYSQL_PASSWORD=changeme
+    env_file: ./src/.env
+
+volumes:
+  database:
+  upload: null
+  log: null

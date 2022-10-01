@@ -23,31 +23,36 @@
       <b-col>
         <div class="menu d-flex flex-wrap">
           <b-card
-            img-src="https://picsum.photos/600/300/?image=25"
+            v-for="item in items"
+            :key="item.id"
+            :img-src="item.pic"
             img-alt="Image"
             img-top
             tag="article"
             class="mb-2 menu--b-card"
           >
-            <b-card-title>มาการอง</b-card-title>
+            <b-card-title>{{ item.name }}</b-card-title>
             <div class="card--price">
-              <span class="m-r-10">Price:</span>
-              <span class="bold bigger">ราคา</span>
+              <span class="me-2">Price:</span>
+              <span class="bold bigger">{{ item.price }}</span>
               <span class="mx-2">/</span>
-              <span>หน่วย</span>
+              <span>{{ item.unit }}</span>
             </div>
             <div class="my-1">
-              <span class="m-r-10">Category:</span>
-              <b-button class="m-r-5" variant="outline-info" size="sm" pill
-                >fruit product</b-button
-              >
-              <b-button variant="outline-warning" size="sm" pill
-                >fruit product</b-button
+              <span class="me-2">Category:</span>
+              <b-button
+                v-for="cate in item.category"
+                :key="cate.id"
+                class="me-1"
+                variant="outline-info"
+                size="sm"
+                pill
+                >{{ cate.name }}</b-button
               >
             </div>
             <div>
-              <span class="m-r-10">In-stock:</span>
-              <span>จำนวนในสต็อก</span>
+              <span class="me-2">In-stock:</span>
+              <span>{{ item.quantity }}</span>
             </div>
           </b-card>
         </div>
@@ -63,13 +68,13 @@
                 style="color: red"
                 >delete</span
               >
-              <b-form-spinbutton
+              <!-- <b-form-spinbutton
                 id="demo-sb"
-                v-model="value"
+                v-model="amount"
                 min="1"
                 max="100"
-                size="sm"
-              ></b-form-spinbutton>
+                inline
+              ></b-form-spinbutton> -->
             </span>
             <span class="mx-2">แยม</span>
             <span>50.00</span>
@@ -111,16 +116,37 @@
     <b-row> </b-row>
   </div>
 </template>
+
 <script>
-/* eslint-disable */
+import api from "../apis";
+
 export default {
   data() {
     return {
-      value: 50,
+      items: [],
+      amount: 50,
     };
+  },
+  methods: {
+    async initPage() {
+      await api
+        .getItems()
+        .then((result) => {
+          console.log(result);
+          this.items = [...result.data];
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+  },
+  created() {
+    console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+    this.initPage();
   },
 };
 </script>
+
 <style>
 .search-bar {
   position: sticky;
@@ -180,9 +206,3 @@ export default {
   border: none;
 }
 </style>
-<script>
-export default {
-  name: "StorefrontView",
-  components: {},
-};
-</script>

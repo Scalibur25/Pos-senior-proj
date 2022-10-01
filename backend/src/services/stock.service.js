@@ -26,6 +26,13 @@ const methods = {
       data,
       where:{
         id
+      },
+      include: {
+        item: {
+          include:{
+            category : true
+          }
+        }
       }
     })
   },

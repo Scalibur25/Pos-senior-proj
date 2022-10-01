@@ -1,4 +1,7 @@
 const itemApis = require("./items");
+const stockApis = require("./stock");
+const categoryApis = require("./category");
+
 // import axios from "axios";
 
 // axios.interceptors.response.use(
@@ -37,4 +40,6 @@ const itemApis = require("./items");
 /* eslint-enable */
 export default {
   ...itemApis,
+  ...stockApis,
+  ...categoryApis,
 };

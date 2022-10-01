@@ -11,4 +11,12 @@ function createItem(body) {
     throw Error;
   }
 }
-module.exports = { getItems, createItem };
+
+function editItem(body) {
+  try {
+    return axios.post(process.env.VUE_APP_API_HOST + `/items`, { data: body });
+  } catch (e) {
+    throw Error;
+  }
+}
+module.exports = { getItems, createItem, editItem };

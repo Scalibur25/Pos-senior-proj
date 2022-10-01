@@ -31,14 +31,14 @@
           >
             <b-card-title>มาการอง</b-card-title>
             <div class="card--price">
-              <span class="me-2">Price:</span>
+              <span class="m-r-10">Price:</span>
               <span class="bold bigger">ราคา</span>
               <span class="mx-2">/</span>
               <span>หน่วย</span>
             </div>
             <div class="my-1">
-              <span class="me-2">Category:</span>
-              <b-button class="me-1" variant="outline-info" size="sm" pill
+              <span class="m-r-10">Category:</span>
+              <b-button class="m-r-5" variant="outline-info" size="sm" pill
                 >fruit product</b-button
               >
               <b-button variant="outline-warning" size="sm" pill
@@ -46,59 +46,9 @@
               >
             </div>
             <div>
-              <span class="me-2">In-stock:</span>
+              <span class="m-r-10">In-stock:</span>
               <span>จำนวนในสต็อก</span>
             </div>
-          </b-card>
-          <b-card
-            title="Card Title"
-            img-src="https://picsum.photos/600/300/?image=25"
-            img-alt="Image"
-            img-top
-            tag="article"
-            class="mb-2 menu--b-card"
-          >
-          </b-card>
-          <b-card
-            title="Card Title"
-            img-src="https://picsum.photos/600/300/?image=25"
-            img-alt="Image"
-            img-top
-            tag="article"
-            class="mb-2 menu--b-card"
-          >
-            <b-card-text>
-              Some quick example text to build on the card title and make up the
-              bulk of the card's content.
-            </b-card-text>
-          </b-card>
-          <b-card
-            title="Card Title"
-            img-src="https://picsum.photos/600/300/?image=25"
-            img-alt="Image"
-            img-top
-            tag="article"
-            class="mb-2 menu--b-card"
-          >
-            <!-- <b-card-title>
-                {{ item.description }}
-              </b-card-title>
-              <b-card-text>
-                price: {{ item.price }} {{ item.unit }}
-              </b-card-text> -->
-          </b-card>
-          <b-card
-            title="Card Title"
-            img-src="https://picsum.photos/600/300/?image=25"
-            img-alt="Image"
-            img-top
-            tag="article"
-            class="mb-2 menu--b-card"
-          >
-            <b-card-text>
-              Some quick example text to build on the card title and make up the
-              bulk of the card's content.
-            </b-card-text>
           </b-card>
         </div>
       </b-col>
@@ -109,7 +59,7 @@
           >
             <span class="d-flex">
               <span
-                class="material-icons align-self-center me-3"
+                class="material-icons align-self-center m-r-10"
                 style="color: red"
                 >delete</span
               >
@@ -118,7 +68,7 @@
                 v-model="value"
                 min="1"
                 max="100"
-                inline
+                size="sm"
               ></b-form-spinbutton>
             </span>
             <span class="mx-2">แยม</span>
@@ -133,7 +83,7 @@
           <span class="bold bigger">1500.00</span>
           <span>SUBMIT ORDER</span>
         </b-button>
-        <b-button class="buttons--preview mt-3" variant="outline-secondary">
+        <b-button class="buttons--preview mt-2" variant="outline-secondary">
           Preview Receipt
         </b-button>
 
@@ -186,6 +136,12 @@ export default {
   margin: 6px;
   /* width: 14rem; */
   max-width: 20rem;
+}
+.m-r-10 {
+  margin-right: 10px;
+}
+.m-r-5 {
+  margin-right: 5px;
 }
 .col--2 {
   position: fixed;

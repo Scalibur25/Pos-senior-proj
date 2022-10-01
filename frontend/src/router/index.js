@@ -1,4 +1,3 @@
-import StorefrontVue from "@/views/Storefront.vue";
 import Vue from "vue";
 import VueRouter from "vue-router";
 import HomeView from "../views/HomeView.vue";
@@ -21,9 +20,10 @@ const routes = [
       import(/* webpackChunkName: "about" */ "../views/StockManagement.vue"),
   },
   {
-    path: "/storefront",
-    name: "storefront",
-    component: StorefrontVue,
+    path: "/store",
+    name: "store",
+    component: () =>
+      import(/* webpackChunkName: "about" */ "../views/StoreFront.vue"),
   },
 ];
 

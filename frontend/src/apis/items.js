@@ -1,5 +1,5 @@
 const axios = require("axios");
-
+console.log(process.env.VUE_APP_API_HOST);
 function getItems() {
   return axios.get(process.env.VUE_APP_API_HOST + `/items`);
 }

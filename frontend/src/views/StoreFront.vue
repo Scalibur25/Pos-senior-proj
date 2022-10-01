@@ -68,13 +68,13 @@
                 style="color: red"
                 >delete</span
               >
-              <!-- <b-form-spinbutton
+              <b-form-spinbutton
                 id="demo-sb"
                 v-model="amount"
                 min="1"
                 max="100"
                 inline
-              ></b-form-spinbutton> -->
+              ></b-form-spinbutton>
             </span>
             <span class="mx-2">แยม</span>
             <span>50.00</span>

@@ -3,7 +3,7 @@
     <div class="d-flex justify-content-end">
       <b-input v-model="text" placeholder="Enter your name"></b-input>
       <b-button variant="success" v-b-modal="'modalAddItemActive'">
-        add
+        Add
       </b-button>
     </div>
     <b-row>
@@ -78,7 +78,7 @@
 
           <b-form-group
             id="input-description"
-            label="Price:"
+            label="Description:"
             label-for="input-description"
           >
             <b-form-input

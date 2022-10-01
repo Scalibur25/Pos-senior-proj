@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <nav class="sticky-top px-4">
+    <nav class="sticky-top px-4 d-flex align-items-center">
       <div id="essist">ESSIST</div>
       <router-link to="/">Home</router-link>
       <span>|</span>
@@ -25,10 +25,6 @@ nav {
   /* padding: 15px 30px; */
   height: 100px;
   text-align: center;
-  /* position: relative; */
-  display: flex;
-  justify-content: start;
-  align-items: center;
   background-color: white;
   position: sticky;
   box-shadow: 0px 0px 15px #8997a6;

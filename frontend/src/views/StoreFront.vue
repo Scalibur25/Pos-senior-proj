@@ -25,7 +25,7 @@
           <b-card
             v-for="item in items"
             :key="item.id"
-            img-src="https://picsum.photos/600/300/?image=25"
+            :img-src="item.pic"
             img-alt="Image"
             img-top
             tag="article"

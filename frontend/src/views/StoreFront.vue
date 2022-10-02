@@ -59,7 +59,7 @@
         </div>
       </b-col>
       <b-col cols="4" class="col--2">
-        <b-list-group class="item-list">
+        <b-list-group class="item-list mb-3">
           <b-list-group-item
             v-for="car in cart"
             :key="car.id"
@@ -89,6 +89,22 @@
             <span>{{ car.price }}</span>
           </b-list-group-item>
         </b-list-group>
+        <b-card>
+          <div class="d-flex align-items-center mb-3">
+            <span class="m-r-10">Discount:</span>
+            <b-form-input
+              class="m-r-10"
+              placeholder="add discount of this order"
+              type="number"
+              v-model="discount"
+            ></b-form-input>
+            <span>{{ discount }}</span>
+          </div>
+          <div class="d-flex align-items-center mb-3">
+            <span class="m-r-10">Notes:</span>
+            <b-form-textarea placeholder="add notes ..."></b-form-textarea>
+          </div>
+        </b-card>
         <b-button
           class="buttons--submit mt-3 d-flex align-items-center justify-content-between"
           variant="success"
@@ -102,29 +118,10 @@
           }}</span>
           <span>SUBMIT ORDER</span>
         </b-button>
-        <b-button class="buttons--preview mt-2" variant="outline-secondary">
-          Preview Receipt
-        </b-button>
-
-        <!-- <div class="total mx-2 my-4">
-          <span class="me-3">Total :</span>
-          <span class="bold bigger">1500.00</span>
-        </div>
-        <div class="buttons d-flex align-items-center justify-content-between">
-          <b-button
-            variant="success"
-            size="lg"
-            class="buttons--submit bold me-1"
-            >SUBMIT ORDER</b-button
-          >
-          <b-button class="buttons--preview">Preview Receipt</b-button>
-        </div> -->
-
-        <!-- <div class="total d-flex align-items-center justify-content-between">
-          <span class="total--1 d-none d-md-flex">Total</span>
-          <span class="total--2">THB 500.00</span>
-          <span class="total--3 d-none d-lg-flex">SUBMIT ORDER</span>
-        </div> -->
+        <b-button v-b-modal.modal-submit-1>Draft for SUBMIT ORDER</b-button>
+        <b-modal id="modal-submit-1" title="BootstrapVue">
+          <p class="my-4">Hello from modal!</p>
+        </b-modal>
       </b-col>
     </b-row>
     <b-row> </b-row>
@@ -143,6 +140,9 @@ export default {
       amount: 50,
       cart: [],
       paidStatus: false,
+      // BootstrapVue switch checkbox
+      checked: false,
+      discount: 0,
     };
   },
   methods: {
@@ -227,7 +227,7 @@ export default {
 }
 .item-list {
   /* margin-top: 6px; */
-  height: 425px;
+  height: 350px;
   background-color: white;
   position: sticky;
   top: 190px;
@@ -236,9 +236,6 @@ export default {
 .item-list--child {
   padding: 10px;
   width: 100%;
-}
-.buttons--preview {
-  width: 200px;
 }
 .buttons--submit {
   height: 60px;

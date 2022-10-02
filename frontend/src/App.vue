@@ -4,9 +4,11 @@
       <div id="essist">ESSIST</div>
       <router-link to="/">Home</router-link>
       <span>|</span>
+      <router-link to="/store">Storefront</router-link>
+      <span>|</span>
       <router-link to="/stock">Stock Management</router-link>
       <span>|</span>
-      <router-link to="/store">Storefront</router-link>
+      <router-link to="/history">Sales History</router-link>
     </nav>
     <router-view class="router-view" />
   </div>

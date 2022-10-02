@@ -19,8 +19,8 @@ model Order {
   orderId        String   @id @default(uuid())
   createAt       DateTime @default(now())
   paidAt         DateTime
-  picPaid        String
-  address1       String
+  picPaid        String?
+  address1       String?
   address2       String?
   addressZipcode Int
 
@@ -30,13 +30,11 @@ model Order {
 }
 
 model itemList {
-  note            String
-  markupDirection String
-  markupUnit      String
-  markupAmount    String
-  quantity        Int
-  orderId         String
-  itemId          String
+  note     String?
+  quantity Int
+  price    Int
+  orderId  String
+  itemId   String
 
   Item    item  @relation(fields: [itemId], references: [id])
   OrderId Order @relation(fields: [orderId], references: [orderId])

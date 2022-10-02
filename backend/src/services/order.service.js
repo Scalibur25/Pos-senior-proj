@@ -1,4 +1,5 @@
 const { PrismaClient } = require("@prisma/client");
+const short = require('short-uuid');
 const prisma = new PrismaClient();
 
 const methods = {
@@ -7,6 +8,11 @@ const methods = {
     return prisma.order.findMany({
       include: {
         category: true,
+        itemList:{
+          include:{
+            Item: true
+          }
+        }
       }
     })
   },
@@ -15,13 +21,27 @@ const methods = {
     return prisma.order.findUnique({
       where:{
         id: id
+      },
+      include: {
+        category: true,
+        itemList:{
+          include:{
+            Item: true
+          }
+        }
       }
     })
   },
 
   async create(data){
+    const decimalTranslator = short("0123456789");
     return prisma.order.create({
-      data
+      data:{
+        id: decimalTranslator,
+        ...data,
+        
+
+      }
     })
   },
 

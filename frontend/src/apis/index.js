@@ -1,6 +1,7 @@
 const itemApis = require("./items");
 const stockApis = require("./stock");
 const categoryApis = require("./category");
+const orderApis = require("./order");
 
 // import axios from "axios";
 
@@ -42,4 +43,5 @@ export default {
   ...itemApis,
   ...stockApis,
   ...categoryApis,
+  ...orderApis,
 };

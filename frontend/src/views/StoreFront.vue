@@ -30,6 +30,7 @@
             img-top
             tag="article"
             class="mb-2 menu--b-card"
+            @click="addToCard(item)"
           >
             <b-card-title>{{ item.name }}</b-card-title>
             <div class="card--price">
@@ -60,32 +61,45 @@
       <b-col cols="4" class="col--2">
         <b-list-group class="item-list">
           <b-list-group-item
+            v-for="car in cart"
+            :key="car.id"
             class="d-flex align-items-center justify-content-between"
           >
-            <span class="d-flex">
-              <span
-                class="material-icons align-self-center m-r-10"
-                style="color: red"
-                >delete</span
-              >
+            <span class="d-flex align-items-center">
+              <b-button
+                variant="outline-light"
+                style="outline: none !important"
+                @click="removeFromCart(car.id)"
+                ><b-icon
+                  variant="danger"
+                  icon="trash-fill"
+                  font-scale="1"
+                ></b-icon
+              ></b-button>
+
               <b-form-spinbutton
                 id="demo-sb"
-                v-model="amount"
-                min="1"
-                max="100"
+                v-model="car.amount"
+                :min="1"
+                :max="car.quantity"
                 inline
               ></b-form-spinbutton>
             </span>
-            <span class="mx-2">แยม</span>
-            <span>50.00</span>
+            <span class="mx-2 text-truncate">{{ car.name }}</span>
+            <span>{{ car.price }}</span>
           </b-list-group-item>
         </b-list-group>
         <b-button
           class="buttons--submit mt-3 d-flex align-items-center justify-content-between"
           variant="success"
+          @click="confirmOrderModal = true"
         >
           <span>Total</span>
-          <span class="bold bigger">1500.00</span>
+          <span class="bold bigger">{{
+            cart.reduce((previousValue, currentValue) => {
+              return currentValue.price * currentValue.amount + previousValue;
+            }, 0)
+          }}</span>
           <span>SUBMIT ORDER</span>
         </b-button>
         <b-button class="buttons--preview mt-2" variant="outline-secondary">
@@ -114,6 +128,7 @@
       </b-col>
     </b-row>
     <b-row> </b-row>
+    <b-modal v-if="confirmOrderModal && cart.length > 0"></b-modal>
   </div>
 </template>
 
@@ -123,8 +138,11 @@ import api from "../apis";
 export default {
   data() {
     return {
+      confirmOrderModal: false,
       items: [],
       amount: 50,
+      cart: [],
+      paidStatus: false,
     };
   },
   methods: {
@@ -139,9 +157,43 @@ export default {
           console.log(err);
         });
     },
+    addToCard(target) {
+      const initCartBody = {
+        amount: 1,
+        quantity: target.quantity,
+        name: target.name,
+        id: target.id,
+        price: target.price,
+      };
+      const index = this.cart.findIndex((e) => e.id === target.id);
+      console.log(index);
+      if (index >= 0) {
+        this.cart[index].amount < this.cart[index].quantity
+          ? (this.cart[index].amount += 1)
+          : this.cart[index].amount;
+      } else this.cart.push(initCartBody);
+      console.log(this.cart);
+    },
+    removeFromCart(target) {
+      this.cart = this.cart.filter((value) => value.id !== target);
+    },
+
+    async createOrder() {
+      await api
+        .createOrder({
+          paidAt: this.paidStatus ? new Date() : null,
+          itemlist: this.cart,
+        })
+        .then((result) => {
+          console.log(result);
+          return result.data;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
   },
   created() {
-    console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
     this.initPage();
   },
 };

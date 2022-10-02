@@ -64,17 +64,17 @@
           >
             <span class="d-flex">
               <span
-                class="material-icons align-self-center me-3"
+                class="material-icons align-self-center m-r-10"
                 style="color: red"
                 >delete</span
               >
-              <!-- <b-form-spinbutton
+              <b-form-spinbutton
                 id="demo-sb"
                 v-model="amount"
                 min="1"
                 max="100"
                 inline
-              ></b-form-spinbutton> -->
+              ></b-form-spinbutton>
             </span>
             <span class="mx-2">แยม</span>
             <span>50.00</span>
@@ -88,7 +88,7 @@
           <span class="bold bigger">1500.00</span>
           <span>SUBMIT ORDER</span>
         </b-button>
-        <b-button class="buttons--preview mt-3" variant="outline-secondary">
+        <b-button class="buttons--preview mt-2" variant="outline-secondary">
           Preview Receipt
         </b-button>
 
@@ -162,6 +162,12 @@ export default {
   margin: 6px;
   /* width: 14rem; */
   max-width: 20rem;
+}
+.m-r-10 {
+  margin-right: 10px;
+}
+.m-r-5 {
+  margin-right: 5px;
 }
 .col--2 {
   position: fixed;

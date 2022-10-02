@@ -3,11 +3,30 @@ const prisma = new PrismaClient();
 
 const methods = {
 
-  async getItems() {
+  async getItems(status) {
+    const statusOption = status === 'null'? {} : {status:Boolean(status)}
     return prisma.item.findMany({
+      where:{
+        ...statusOption
+      },
+      orderBy:[{
+        status: 'desc'
+      },{
+        quantity: 'desc'
+      }],
       include: {
         category: true,
       }
+    })
+  },
+
+
+  async orderItemsCheck(id,amount) {
+    return prisma.item.findFirst({
+      where:{ id ,
+      quantity: {
+        gte: amount
+      }}
     })
   },
 

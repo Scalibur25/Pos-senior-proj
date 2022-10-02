@@ -4,6 +4,14 @@ function getItems() {
   return axios.get(process.env.VUE_APP_API_HOST + `/items`);
 }
 
+function getReadyItems() {
+  return axios.get(process.env.VUE_APP_API_HOST + `/items`, {
+    params: {
+      status: true,
+    },
+  });
+}
+
 function createItem(body) {
   try {
     return axios.post(process.env.VUE_APP_API_HOST + `/items`, { data: body });
@@ -21,4 +29,4 @@ function editItem(body) {
     throw Error;
   }
 }
-module.exports = { getItems, createItem, editItem };
+module.exports = { getItems, createItem, editItem, getReadyItems };

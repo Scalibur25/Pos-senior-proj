@@ -3,8 +3,10 @@ const itemService = require('../services/item.service')
 const methods = {
 
   async getItems(req, res) {
+    const status = req.query?.status ? req.query?.status : 'null'
+    console.log(status)
     try {
-      const items = await itemService.getItems(); 
+      const items = await itemService.getItems(status); 
       return res.json(items)
     } catch (error) {
       console.log(error)

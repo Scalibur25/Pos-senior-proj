@@ -22,40 +22,60 @@
     <b-row>
       <b-col>
         <div class="menu d-flex flex-wrap">
-          <b-card
+          <b-overlay
             v-for="item in items"
             :key="item.id"
-            :img-src="item.pic"
-            img-alt="Image"
-            img-top
-            tag="article"
-            class="mb-2 menu--b-card"
-            @click="addToCard(item)"
+            :show="item.quantity < 1"
+            spinner-variant="primary"
+            spinner-type="grow"
+            spinner-small
+            rounded="sm"
+            style="max-width: 320px"
           >
-            <b-card-title>{{ item.name }}</b-card-title>
-            <div class="card--price">
-              <span class="me-2">Price:</span>
-              <span class="bold bigger">{{ item.price }}</span>
-              <span class="mx-2">/</span>
-              <span>{{ item.unit }}</span>
-            </div>
-            <div class="my-1">
-              <span class="me-2">Category:</span>
-              <b-button
-                v-for="cate in item.category"
-                :key="cate.id"
-                class="me-1"
-                variant="outline-info"
-                size="sm"
-                pill
-                >{{ cate.name }}</b-button
-              >
-            </div>
-            <div>
-              <span class="me-2">In-stock:</span>
-              <span>{{ item.quantity }}</span>
-            </div>
-          </b-card>
+            <template #overlay>
+              <b-icon
+                icon="stopwatch"
+                variant="info"
+                scale="2"
+                shift-v="8"
+                shift-h="8"
+                class="position-absolute"
+                style="top: 0; right: 0"
+              ></b-icon>
+            </template>
+            <b-card
+              :img-src="item.pic"
+              img-alt="Image"
+              img-top
+              tag="article"
+              class="mb-2 menu--b-card"
+              @click="addToCard(item)"
+            >
+              <b-card-title>{{ item.name }}</b-card-title>
+              <div class="card--price">
+                <span class="me-2">Price:</span>
+                <span class="bold bigger">{{ item.price }}</span>
+                <span class="mx-2">/</span>
+                <span>{{ item.unit }}</span>
+              </div>
+              <div class="my-1">
+                <span class="me-2">Category:</span>
+                <b-button
+                  v-for="cate in item.category"
+                  :key="cate.id"
+                  class="me-1"
+                  variant="outline-info"
+                  size="sm"
+                  pill
+                  >{{ cate.name }}</b-button
+                >
+              </div>
+              <div>
+                <span class="me-2">In-stock:</span>
+                <span>{{ item.quantity }}</span>
+              </div>
+            </b-card>
+          </b-overlay>
         </div>
       </b-col>
       <b-col cols="4" class="col--2">
@@ -92,7 +112,7 @@
         <b-button
           class="buttons--submit mt-3 d-flex align-items-center justify-content-between"
           variant="success"
-          @click="confirmOrderModal = true"
+          @click="calculateModelOrder()"
         >
           <span>Total</span>
           <span class="bold bigger">{{
@@ -127,8 +147,11 @@
         </div> -->
       </b-col>
     </b-row>
-    <b-row> </b-row>
-    <b-modal v-if="confirmOrderModal && cart.length > 0"></b-modal>
+    <b-modal
+      v-model="confirmOrderModal"
+      @ok="createOrder"
+      @cancel="reload"
+    ></b-modal>
   </div>
 </template>
 
@@ -148,7 +171,7 @@ export default {
   methods: {
     async initPage() {
       await api
-        .getItems()
+        .getReadyItems()
         .then((result) => {
           console.log(result);
           this.items = [...result.data];
@@ -171,11 +194,20 @@ export default {
         this.cart[index].amount < this.cart[index].quantity
           ? (this.cart[index].amount += 1)
           : this.cart[index].amount;
-      } else this.cart.push(initCartBody);
+      } else {
+        target.quantity > 0 ? this.cart.push(initCartBody) : this.cart;
+      }
       console.log(this.cart);
     },
     removeFromCart(target) {
       this.cart = this.cart.filter((value) => value.id !== target);
+    },
+    reload() {
+      this.$router.go(this.$router.currentRoute);
+    },
+
+    calculateModelOrder() {
+      this.confirmOrderModal = this.cart.length > 0 ? true : false;
     },
 
     async createOrder() {
@@ -185,8 +217,11 @@ export default {
           itemlist: this.cart,
         })
         .then((result) => {
-          console.log(result);
-          return result.data;
+          if (result.status === 200) {
+            this.reload();
+          } else {
+            //error hander
+          }
         })
         .catch((err) => {
           console.log(err);

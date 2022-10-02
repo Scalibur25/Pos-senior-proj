@@ -2,7 +2,7 @@
   <b-container>
     <div class="d-flex justify-content-end">
       <b-input v-model="text" placeholder="Enter your name"></b-input>
-      <b-button variant="success" v-b-modal="'modalAddItemActive'">
+      <b-button variant="success" @click="modalAddItemActive = true">
         add
       </b-button>
     </div>
@@ -63,7 +63,7 @@
     </b-row>
 
     <!-- ADDITEM -->
-    <b-modal id="modalAddItemActive" title="Add New Item" @ok="onSubmit">
+    <b-modal v-model="modalAddItemActive" title="Add New Item" @ok="onSubmit">
       <div>
         <form ref="form">
           <b-form-group id="input-group-1" label="Name:" label-for="input-1">
@@ -99,27 +99,38 @@
               required
             ></b-form-input>
           </b-form-group>
-
-          <b-form-group id="input-group-2" label="Price:" label-for="input-2">
-            <b-form-input
-              id="input-2"
-              v-model="form.price"
-              placeholder="Enter Price"
-              type="number"
-              required
-            ></b-form-input>
-          </b-form-group>
-
-          <b-form-group id="input-group-3" label="Cost:" label-for="input-3">
-            <b-form-input
-              id="input-3"
-              v-model="form.cost"
-              placeholder="Enter Cost"
-              type="number"
-              required
-            ></b-form-input>
-          </b-form-group>
-
+          <b-row>
+            <b-col cols="8" sm="6">
+              <b-form-group
+                id="input-group-2"
+                label="Price:"
+                label-for="input-2"
+              >
+                <b-form-input
+                  id="input-2"
+                  v-model="form.price"
+                  placeholder="Enter Price"
+                  type="number"
+                  required
+                ></b-form-input>
+              </b-form-group>
+            </b-col>
+            <b-col cols="8" sm="6">
+              <b-form-group
+                id="input-group-3"
+                label="Cost:"
+                label-for="input-3"
+              >
+                <b-form-input
+                  id="input-3"
+                  v-model="form.cost"
+                  placeholder="Enter Cost"
+                  type="number"
+                  required
+                ></b-form-input>
+              </b-form-group>
+            </b-col>
+          </b-row>
           <b-form-group id="input-group-4" label="Unit:" label-for="input-4">
             <b-form-input
               id="input-4"
@@ -199,27 +210,36 @@
               required
             ></b-form-input>
           </b-form-group>
-
-          <b-form-group id="input-group-2" label="Price:" label-for="input-2">
-            <b-form-input
-              id="input-2"
-              v-model="EditItem.price"
-              placeholder="Enter Price"
-              type="number"
-              required
-            ></b-form-input>
-          </b-form-group>
-
-          <b-form-group id="input-group-3" label="Cost:" label-for="input-3">
-            <b-form-input
-              id="input-3"
-              v-model="EditItem.cost"
-              placeholder="Enter Cost"
-              type="number"
-              required
-            ></b-form-input>
-          </b-form-group>
-
+          <b-row>
+            <b-col cols="8" sm="6"
+              ><b-form-group
+                id="input-group-2"
+                label="Price:"
+                label-for="input-2"
+              >
+                <b-form-input
+                  id="input-2"
+                  v-model="EditItem.price"
+                  placeholder="Enter Price"
+                  type="number"
+                  required
+                ></b-form-input> </b-form-group
+            ></b-col>
+            <b-col cols="4" sm="6"
+              ><b-form-group
+                id="input-group-3"
+                label="Cost:"
+                label-for="input-3"
+              >
+                <b-form-input
+                  id="input-3"
+                  v-model="EditItem.cost"
+                  placeholder="Enter Cost"
+                  type="number"
+                  required
+                ></b-form-input> </b-form-group
+            ></b-col>
+          </b-row>
           <b-form-group id="input-group-4" label="Unit:" label-for="input-4">
             <b-form-input
               id="input-4"
@@ -229,6 +249,20 @@
               required
             ></b-form-input>
           </b-form-group>
+
+          <b-form-group id="category" label="Category:" label-for="category">
+            <b-form-select
+              multiple
+              :select-size="1"
+              v-model="EditItem.category"
+              :options="
+                categoryOption.map((e) => ({ value: e.id, text: e.name }))
+              "
+              class="mb-3"
+            >
+            </b-form-select>
+          </b-form-group>
+          {{ EditItem }}
         </form>
       </div>
     </b-modal>
@@ -303,7 +337,10 @@ export default {
           category: { connect: [{ id: this.form.category }] },
         })
         .then((result) => {
-          this.items = [...result.data, result.data];
+          result.status === 200
+            ? (this.modalAddItemActive = false)
+            : this.modalAddItemActive;
+          this.items = [...this.items, result.data];
         })
         .catch((err) => {
           console.log(err);

@@ -21,7 +21,10 @@ const methods = {
 
   async createItems(data){
     return prisma.item.create({
-      data
+      data,
+      include:{
+        category:true
+      }
     })
   },
 

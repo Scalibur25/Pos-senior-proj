@@ -6,13 +6,15 @@ const methods = {
 
   async get() {
     return prisma.order.findMany({
-      include: {
-        category: true,
+      include:{
         itemList:{
           include:{
             Item: true
           }
         }
+      }
+      ,orderBy: {
+        createAt: 'desc'
       }
     })
   },

@@ -7,4 +7,13 @@ function createOrder(body) {
     throw Error;
   }
 }
-module.exports = { createOrder };
+
+function getOrder() {
+  try {
+    return axios.get(process.env.VUE_APP_API_HOST + `/order`);
+  } catch (e) {
+    throw Error;
+  }
+}
+
+module.exports = { createOrder, getOrder };

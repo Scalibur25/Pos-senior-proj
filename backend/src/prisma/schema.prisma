@@ -16,10 +16,13 @@ model Address {
 }
 
 model Order {
-  orderId        Int      @id
-  createAt       DateTime @default(now())
+  orderId        Int       @id
+  createAt       DateTime  @default(now())
   paidAt         DateTime?
   picPaid        String?
+  note           String?
+  price          Int       @default(0)
+  discount       Int       @default(0)
   address1       String?
   address2       String?
   addressZipcode Int?

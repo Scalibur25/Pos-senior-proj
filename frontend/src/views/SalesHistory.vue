@@ -24,9 +24,16 @@
         <b-table
           bordered
           sticky-header
+          select-mode="single"
           head-variant="secondary"
           hover
-          :items="items"
+          :items="itemsOption"
+          selectable
+          @row-selected="onRowSelected"
+          :fields="[
+            { key: 'orderId', label: 'Bill' },
+            { key: 'createAt', label: 'Date' },
+          ]"
         >
           <template #cell(index)="data">
             {{ data.index + 1 }}
@@ -35,24 +42,86 @@
           <template #cell(Order-Details)></template>
         </b-table>
       </b-col>
-      <b-col> </b-col>
+      <b-col>
+        <b-row
+          ><b-col>orderId: {{ selected.orderId }}</b-col
+          ><b-col>data: {{ toDateString(selected.createAt) }}</b-col>
+        </b-row>
+        <b-row><b-col>itemList:</b-col><b-col>price:</b-col> </b-row>
+        <b-row v-for="item in selected.itemList" :key="item.id">
+          <b-col>{{ item.quantity }} x {{ item.Item.name }}</b-col
+          ><b-col>{{ item.quantity * item.price }}</b-col>
+        </b-row>
+      </b-col>
     </b-row>
   </div>
 </template>
 <script>
+import api from "../apis";
 export default {
   data() {
     return {
+      selected: {},
       items: [
-        {
-          datetime_submitted: "02/10/2022 13:14:00",
-          order_id: 10705011027,
-        },
         // { age: 21, first_name: "Larsen", last_name: "Shaw" },
         // { age: 89, first_name: "Geneva", last_name: "Wilson" },
         // { age: 38, first_name: "Jami", last_name: "Carney" },
       ],
     };
+  },
+  computed: {
+    itemsOption() {
+      return this.items.map((e) => {
+        const dd = new Date(e.createAt);
+        return {
+          orderId: e.orderId,
+          createAt: `
+          ${dd.getDate() > 9 ? dd.getDate() : "0" + dd.getDate()}/${
+            dd.getMonth() + 1 > 9
+              ? dd.getMonth() + 1
+              : "0" + (dd.getMonth() + 1)
+          }/${dd.getFullYear()} 
+          ${dd.getHours() > 9 ? dd.getHours() : "0" + dd.getHours()}:${
+            dd.getMinutes() > 9 ? dd.getMinutes() : "0" + dd.getMinutes()
+          }:${dd.getSeconds() > 9 ? dd.getSeconds() : "0" + dd.getSeconds()}`,
+        };
+      });
+    },
+  },
+  methods: {
+    toDateString(date) {
+      const dd = new Date(date);
+      return `
+          ${dd.getDate() > 9 ? dd.getDate() : "0" + dd.getDate()}/${
+        dd.getMonth() + 1 > 9 ? dd.getMonth() + 1 : "0" + (dd.getMonth() + 1)
+      }/${dd.getFullYear()} 
+          ${dd.getHours() > 9 ? dd.getHours() : "0" + dd.getHours()}:${
+        dd.getMinutes() > 9 ? dd.getMinutes() : "0" + dd.getMinutes()
+      }:${dd.getSeconds() > 9 ? dd.getSeconds() : "0" + dd.getSeconds()}`;
+    },
+    onRowSelected(items) {
+      const id = items[0].orderId;
+      this.selected = this.items.filter((e) => {
+        console.log(e);
+        return e.orderId == id;
+      })[0];
+      console.log(this.selected);
+    },
+    async initPage() {
+      await api
+        .getOrder()
+        .then((result) => {
+          console.log(result);
+          this.selected = result.data[0];
+          this.items = [...result.data];
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+  },
+  created() {
+    this.initPage();
   },
 };
 </script>

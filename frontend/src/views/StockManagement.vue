@@ -252,8 +252,6 @@
 
           <b-form-group id="category" label="Category:" label-for="category">
             <b-form-select
-              multiple
-              :select-size="1"
               v-model="EditItem.category"
               :options="
                 categoryOption.map((e) => ({ value: e.id, text: e.name }))
@@ -262,7 +260,6 @@
             >
             </b-form-select>
           </b-form-group>
-          {{ EditItem }}
         </form>
       </div>
     </b-modal>
@@ -288,6 +285,7 @@ import api from "@/apis";
 export default {
   data() {
     return {
+      showDismissibleAlert: false,
       items: [],
       categoryOption: [],
       modalAddItemActive: false,
@@ -347,8 +345,7 @@ export default {
         });
     },
     async editOn(item) {
-      console.log(item);
-      this.EditItem = item;
+      this.EditItem = { ...item };
       this.modalEditItemActive = true;
     },
 
@@ -358,19 +355,41 @@ export default {
     },
 
     async onEdit() {
-      const resp = await api
-        .editItem(this.EditItem)
+      const body = {
+        id: this.EditItem.id,
+        price: parseInt(this.EditItem.price),
+        cost: parseInt(this.EditItem.cost),
+        unit: this.EditItem.unit,
+        name: this.EditItem.name,
+        pic: this.EditItem.pic,
+        description: this.EditItem.description,
+        status: this.EditItem.status,
+        quantity: parseInt(this.EditItem.quantity),
+        category:
+          this.EditItem.category.length > 0
+            ? {
+                set: {
+                  id:
+                    typeof this.EditItem.category === "string"
+                      ? this.EditItem.category
+                      : this.EditItem.category[0].id,
+                },
+              }
+            : {},
+      };
+      await api
+        .editItem(body)
         .then((result) => {
-          console.log(result);
+          this.items[
+            parseInt(
+              this.items.findIndex((element) => element.id > result.data.id)
+            ) - 1
+          ] = { ...result.data };
+          this.$forceUpdate();
         })
         .catch((err) => {
           console.log(err);
         });
-
-      const index = parseInt(
-        this.items.findIndex((element) => element.id > resp.id)
-      );
-      this.items[index - 1] = resp.quantity;
     },
 
     async onStock() {
@@ -425,7 +444,6 @@ export default {
     },
   },
   created() {
-    console.log(api);
     this.initPage();
   },
 };

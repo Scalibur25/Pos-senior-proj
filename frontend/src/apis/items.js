@@ -14,7 +14,9 @@ function createItem(body) {
 
 function editItem(body) {
   try {
-    return axios.post(process.env.VUE_APP_API_HOST + `/items`, { data: body });
+    return axios.put(process.env.VUE_APP_API_HOST + `/items/` + body.id, {
+      data: body,
+    });
   } catch (e) {
     throw Error;
   }

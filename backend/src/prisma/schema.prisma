@@ -52,7 +52,7 @@ model item {
   name        String
   pic         String
   description String?
-  status      String
+  status      Boolean @default(false)
   quantity    Int
 
   category category[]

@@ -17,38 +17,53 @@
           img-alt="Image"
           img-top
           tag="article"
+          style="max-width: 18rem"
           class="m-1"
         >
-          <b-card-title>
+          <b-card-title class="text-truncate">
+            <b-icon
+              v-if="item.status"
+              variant="success"
+              icon="circle-fill"
+              font-scale="0.7"
+            ></b-icon>
+            <b-icon v-else icon="circle-fill" font-scale="0.7"></b-icon>
+
             {{ item.name }}
           </b-card-title>
-          <div class="col-sm col-xs-12">{{ item.description }}</div>
+          <div class="col-sm col-xs-12 text-truncate">
+            {{ item.description }}
+          </div>
           <div class="col-sm col-xs-12">cost: {{ item.cost }} THB</div>
           <div class="col-sm col-xs-12">price: {{ item.price }} THB</div>
           <div class="col-sm col-xs-12">
             quantity: {{ item.quantity }} {{ item.unit }}
           </div>
+          <div class="col-sm col-xs-12">
+            <b-card-text v-if="item.category.length > 0">
+              category:
+              <b-button-group size="sm">
+                <b-button
+                  variant="outline-info"
+                  size="sm"
+                  pill
+                  v-for="cate in item.category"
+                  :key="cate.id"
+                >
+                  {{ cate.name }}
+                </b-button>
+              </b-button-group>
+            </b-card-text>
 
-          <b-card-text v-if="item.category.length > 0">
-            category:
-            <b-button-group size="sm">
-              <b-button
-                variant="outline-info"
-                size="sm"
-                pill
-                v-for="cate in item.category"
-                :key="cate.id"
-              >
-                {{ cate.name }}
-              </b-button>
-            </b-button-group>
-          </b-card-text>
-          <b-card-text v-else>
-            category:
-            <b-button-group size="sm">
-              <b-button variant="outline-info" size="sm" pill> ไม่มี </b-button>
-            </b-button-group>
-          </b-card-text>
+            <b-card-text v-else>
+              category:
+              <b-button-group size="sm">
+                <b-button variant="outline-info" size="sm" pill>
+                  ไม่มี
+                </b-button>
+              </b-button-group>
+            </b-card-text>
+          </div>
 
           <template #footer>
             <b-button-group size="sm">
@@ -260,6 +275,11 @@
             >
             </b-form-select>
           </b-form-group>
+
+          <b-form-group id="input-group-4">
+            <b-form-checkbox v-model="EditItem.status">On Sale</b-form-checkbox>
+          </b-form-group>
+          {{ EditItem }}
         </form>
       </div>
     </b-modal>
@@ -305,7 +325,7 @@ export default {
         cost: 0,
         unit: "ชิ้น",
         quantity: 0,
-        status: "TEST",
+        status: false,
       },
     };
   },
@@ -363,7 +383,7 @@ export default {
         name: this.EditItem.name,
         pic: this.EditItem.pic,
         description: this.EditItem.description,
-        status: this.EditItem.status,
+        status: Boolean(this.EditItem.status),
         quantity: parseInt(this.EditItem.quantity),
         category:
           this.EditItem.category.length > 0

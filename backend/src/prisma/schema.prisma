@@ -16,15 +16,15 @@ model Address {
 }
 
 model Order {
-  orderId        String   @id @default(uuid())
+  orderId        Int      @id
   createAt       DateTime @default(now())
-  paidAt         DateTime
+  paidAt         DateTime?
   picPaid        String?
   address1       String?
   address2       String?
-  addressZipcode Int
+  addressZipcode Int?
 
-  zipcode Address @relation(fields: [addressZipcode], references: [zipcode])
+  zipcode Address? @relation(fields: [addressZipcode], references: [zipcode])
 
   itemList itemList[]
 }
@@ -33,7 +33,7 @@ model itemList {
   note     String?
   quantity Int
   price    Int
-  orderId  String
+  orderId  Int
   itemId   String
 
   Item    item  @relation(fields: [itemId], references: [id])

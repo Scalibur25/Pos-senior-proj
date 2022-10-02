@@ -34,15 +34,42 @@ const methods = {
   },
 
   async create(data){
-    const decimalTranslator = short("0123456789");
-    return prisma.order.create({
-      data:{
-        id: decimalTranslator,
-        ...data,
-        
-
-      }
-    })
+    const decimalTranslator = short("0123456789").generate();
+    const paidAt = data.paidAt ? {paidAt: new Date()} : {}
+    const result = 
+      prisma.order.create({
+        data:{
+          orderId: parseInt(decimalTranslator.toString().substring(0, 9)),
+          ...paidAt,
+          itemList: {
+            createMany :
+              {
+                data: data.itemlist.map((e)=>{
+                  return {
+                    itemId: e.id,
+                    quantity: e.amount,
+                    price: e.price
+                  }
+                }),
+                skipDuplicates: false
+              },
+          }
+        }
+      })
+      await Promise.all(data.itemlist.map((e)=>{
+        return prisma.item.update({
+          where: {
+            id:e.id
+          },
+          data:{
+            quantity:{
+              decrement: e.amount
+            }
+          }
+        })
+      }))
+    
+    return result
   },
 
   async update(id,data){

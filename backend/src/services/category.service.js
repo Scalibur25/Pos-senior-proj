@@ -4,7 +4,11 @@ const prisma = new PrismaClient();
 const methods = {
 
   async get() {
-    return prisma.category.findMany()
+    return prisma.category.findMany({
+      include:{
+        _count: true
+      }
+    })
   },
 
   async getById(id) {

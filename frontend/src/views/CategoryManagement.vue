@@ -1,5 +1,7 @@
 <template>
-  <div class="pt-4 px-5">HELLO</div>
+  <div class="pt-4 px-5">
+    <b-table striped hover :items="items" :fields="fields"></b-table>
+  </div>
 </template>
 
 <script>
@@ -7,15 +9,23 @@ import api from "../apis";
 
 export default {
   data() {
-    return {};
+    return {
+      fields: ["name", "description", "count"],
+      items: [],
+    };
   },
   methods: {
     async initPage() {
       await api
-        .getReadyItems()
+        .getCategory()
         .then((result) => {
           console.log(result);
-          this.items = [...result.data];
+          this.items = result.data.map((e) => {
+            const v = e;
+            console.log(e);
+            v.count = e._count.item;
+            return v;
+          });
         })
         .catch((err) => {
           console.log(err);

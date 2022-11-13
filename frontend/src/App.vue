@@ -9,6 +9,8 @@
       <router-link to="/stock">Stock Management</router-link>
       <span>|</span>
       <router-link to="/history">Sales History</router-link>
+      <span>|</span>
+      <router-link to="/category">Category Management</router-link>
     </nav>
     <router-view class="router-view" />
   </div>

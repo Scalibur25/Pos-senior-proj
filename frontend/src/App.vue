@@ -27,7 +27,7 @@
 
 nav {
   /* padding: 15px 30px; */
-  height: 100px;
+  height: 12vh;
   text-align: center;
   background-color: white;
   box-shadow: 0px 0px 15px #8997a6;
@@ -57,5 +57,6 @@ nav span {
 
 .router-view {
   background-color: #f5f5f5;
+  min-height: 88vh;
 }
 </style>

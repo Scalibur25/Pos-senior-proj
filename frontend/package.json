@@ -17,10 +17,16 @@
     "bootstrap": "^4.5.3",
     "bootstrap-vue": "^2.22.0",
     "core-js": "^3.8.3",
+    "file-saver": "^2.0.5",
     "portal-vue": "^2.1.7",
     "vue": "^2.7.10",
+    "vue-blob-json-csv": "^0.1.7",
+    "vue-excel-xlsx": "^1.2.2",
+    "vue-json-csv": "^2.1.0",
     "vue-material-design-icons": "^5.1.2",
-    "vue-router": "^3.5.1"
+    "vue-router": "^3.5.1",
+    "vue-sphinx-xml": "^0.4.2",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",

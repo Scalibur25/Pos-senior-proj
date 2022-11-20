@@ -143,7 +143,7 @@
         </b-button>
       </b-col>
     </b-row>
-    <b-modal v-model="confirmOrderModal" @ok="createOrder" 
+    <b-modal v-model="confirmOrderModal" @ok="createOrder"
       >Are you sure you want to submit this order?</b-modal
     >
   </div>

@@ -1,5 +1,6 @@
 <template>
   <div class="pt-4 px-5">
+    <!-- SEARCH BAR -->
     <b-row class="search-bar d-flex align-items-center mb-4">
       <b-button variant="success" @click="modalAddItemActive = true">
         Add Item</b-button
@@ -42,12 +43,9 @@
           img-top
           tag="article"
           class="item-card m-1"
-          @click="
-            () => {
-              viewItemDetailActive = !viewItemDetailActive;
-            }
-          "
+          @click="itemPreviewOn"
         >
+          <!-- @click="() => {viewItemDetailActive = !viewItemDetailActive;}" -->
           <!-- @click="expandOn(item)" -->
           <b-card-title class="text-truncate">
             {{ item.name }}
@@ -72,8 +70,10 @@
               <span v-else class="ml-1">Not available</span>
             </div>
           </div>
+
           <!-- EXPANDED view of item card (full details)-->
-          <b-row v-else class="mb-3">
+
+          <!-- <b-row v-else class="mb-3">
             <b-col id="item-card--left" cols="4">
               <div>Price:</div>
               <div>Cost:</div>
@@ -102,42 +102,14 @@
               </div>
               <div>{{ item.description }}</div>
             </b-col>
+          </b-row> -->
 
-            <!-- <div class="col-sm col-xs-12">
-              Price: THB {{ item.price }} / {{ item.unit }}
-            </div>
-            <div class="col-sm col-xs-12">
-              Cost: THB {{ item.cost }} / {{ item.unit }}
-            </div>
-            <div class="col-sm col-xs-12">In-stock: {{ item.quantity }}</div>
-            <div class="col-sm col-xs-12">
-              <span class="mr-2">Status:</span>
-              <b-icon
-                v-if="item.status"
-                variant="success"
-                icon="circle-fill"
-                font-scale="0.7"
-              ></b-icon>
-              <b-icon v-else icon="circle-fill" font-scale="0.7"></b-icon>
-              <span v-if="item.status" class="ml-1">Available</span>
-              <span v-else class="ml-1">Not available</span>
-            </div>
-            <div
-              class="col-sm col-xs-12"
-              v-for="cate in item.category"
-              :key="cate.id"
-            >
-              Category: {{ cate.name }}
-            </div>
-            <div class="col-sm col-xs-12">
-              Description:
-              <div class="ml-3">{{ item.description }}</div>
-            </div> -->
-          </b-row>
           <div class="button--link">Click for more details</div>
-          <b-button>Add stock</b-button>
         </b-card>
       </div>
+
+      <!-- VIEW ITEM -->
+      <div class="item-preview">hello</div>
     </div>
 
     <!-- <b-button @click="editOn(item)" variant="warning">Edit</b-button> -->
@@ -453,11 +425,6 @@ export default {
           console.log(err);
         });
     },
-    // async viewOn(item) {
-    //   this.selected = { ...item };
-    //   console.log(item);
-    // },
-
     async editOn(item) {
       this.EditItem = { ...item };
       this.modalEditItemActive = true;
@@ -558,6 +525,10 @@ export default {
     //     this.show = true;
     //   });
     // },
+    async itemPreviewOn(item) {
+      this.selected = { ...item };
+      console.log(item);
+    },
   },
   created() {
     this.initPage();
@@ -599,12 +570,12 @@ export default {
   height: 100%;
   overflow-y: auto;
 }
-.preview-item {
-  /* background-color: pink; */
+.item-preview {
+  background-color: pink;
   border: 1px solid #dcdcdc;
   border-radius: 5px;
 }
-.preview-item--img {
+.item-preview--img {
   width: 500px;
   height: 350px;
   object-fit: cover;

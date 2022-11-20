@@ -11,13 +11,6 @@
           </b-button>
         </b-input-group>
       </b-col>
-      <b-col cols="4">
-        <!-- <span class="d-none d-xl-inline">Filter:</span> -->
-        <span>Filter:</span>
-        <b-dropdown id="dropdown-category" text="Category" class="m-md-2">
-          <b-dropdown-item>category1</b-dropdown-item>
-        </b-dropdown>
-      </b-col>
     </b-row>
     <b-row>
       <b-col>
@@ -31,8 +24,8 @@
           selectable
           @row-selected="onRowSelected"
           :fields="[
-            { key: 'orderId', label: 'Bill' },
-            { key: 'createAt', label: 'Date' },
+            { key: 'orderId', label: 'Order id' },
+            { key: 'createAt', label: 'Datetime created' },
           ]"
         >
           <template #cell(index)="data">
@@ -42,8 +35,40 @@
           <template #cell(Order-Details)></template>
         </b-table>
       </b-col>
-      <b-col>
-        <b-row
+      <b-col cols="4">
+        <div class="preview-order px-3">
+          <div class="d-flex flex-column align-items-center bottom-line py-5">
+            <div>ORDER ID: {{ selected.orderId }}</div>
+            <div>DATETIME CREATED: {{ toDateString(selected.createAt) }}</div>
+          </div>
+          <div class="bottom-line px-3 py-3">
+            <div
+              v-for="item in selected.itemList"
+              :key="item.id"
+              class="d-flex justify-content-between mb-3"
+            >
+              <div>{{ item.quantity }} x {{ item.Item.name }}</div>
+              <div>{{ item.price }}</div>
+              <div>{{ item.quantity * item.price }}</div>
+            </div>
+            <div>
+              <div>Subtotal: {{ selected.price }}</div>
+              <div>Discount: {{ selected.discount }}</div>
+            </div>
+          </div>
+
+          <div
+            class="preview-order--total d-flex justify-content-between bottom-line px-3 py-3"
+          >
+            <div>Total:</div>
+            <div>{{ selected.price - selected.discount }}</div>
+          </div>
+          <div class="px-3 py-3">
+            <div>Note : {{ selected.note }}</div>
+          </div>
+          <div></div>
+        </div>
+        <!-- <b-row
           ><b-col>orderId: {{ selected.orderId }}</b-col
           ><b-col>data: {{ toDateString(selected.createAt) }}</b-col>
         </b-row>
@@ -51,7 +76,7 @@
         <b-row v-for="item in selected.itemList" :key="item.id">
           <b-col>{{ item.quantity }} x {{ item.Item.name }}</b-col
           ><b-col>{{ item.quantity * item.price }}</b-col>
-        </b-row>
+        </b-row> -->
       </b-col>
     </b-row>
   </div>
@@ -129,5 +154,16 @@ export default {
 .table-bg {
   background-color: white;
   height: 100%;
+}
+.preview-order {
+  background-color: pink;
+  border: 1px solid #dcdcdc;
+  border-radius: 5px;
+}
+.preview-order--total {
+  font-size: 2em;
+}
+.bottom-line {
+  border-bottom: 1px solid black;
 }
 </style>

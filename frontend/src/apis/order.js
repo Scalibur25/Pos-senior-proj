@@ -1,6 +1,7 @@
 const axios = require("axios");
 
 function createOrder(body) {
+  console.log(body);
   try {
     return axios.post(process.env.VUE_APP_API_HOST + `/order`, { data: body });
   } catch (e) {

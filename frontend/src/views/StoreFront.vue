@@ -1,6 +1,6 @@
 <template>
   <div class="pt-4 px-5">
-    <b-row class="search-bar d-flex align-items-center pb-2">
+    <b-row class="search-bar d-flex align-items-center mb-4">
       <b-col cols="8">
         <b-input-group>
           <b-form-input type="search" placeholder="Search"></b-form-input>
@@ -121,8 +121,11 @@
             <span>{{ discount }}</span>
           </div>
           <div class="d-flex align-items-center mb-3">
-            <span class="m-r-10">Notes:</span>
-            <b-form-textarea placeholder="add notes ..."></b-form-textarea>
+            <span class="m-r-10">Note:</span>
+            <b-form-textarea
+              v-model="noteOrder"
+              placeholder="Add item desccription ..."
+            ></b-form-textarea>
           </div>
         </b-card>
         <b-button
@@ -134,21 +137,15 @@
           <span class="bold bigger">{{
             cart.reduce((previousValue, currentValue) => {
               return currentValue.price * currentValue.amount + previousValue;
-            }, 0)
+            }, 0) - this.discount
           }}</span>
           <span>SUBMIT ORDER</span>
         </b-button>
-        <b-button v-b-modal.modal-submit-1>Draft for SUBMIT ORDER</b-button>
-        <b-modal id="modal-submit-1" title="BootstrapVue">
-          <p class="my-4">Hello from modal!</p>
-        </b-modal>
       </b-col>
     </b-row>
-    <b-modal
-      v-model="confirmOrderModal"
-      @ok="createOrder"
-      @cancel="reload"
-    ></b-modal>
+    <b-modal v-model="confirmOrderModal" @ok="createOrder" 
+      >Are you sure you want to submit this order?</b-modal
+    >
   </div>
 </template>
 
@@ -166,6 +163,7 @@ export default {
       // BootstrapVue switch checkbox
       checked: false,
       discount: 0,
+      noteOrder: "",
     };
   },
   methods: {
@@ -211,10 +209,16 @@ export default {
     },
 
     async createOrder() {
+      console.log(this.noteOrder);
+      const stt = this.cart.reduce((a, b) => b.amount * b.price + a, 0);
+      console.log(stt);
       await api
         .createOrder({
+          price: stt,
           paidAt: this.paidStatus ? new Date() : null,
           itemlist: this.cart,
+          discount: this.discount,
+          note: this.noteOrder,
         })
         .then((result) => {
           if (result.status === 200) {
@@ -237,9 +241,8 @@ export default {
 <style>
 .search-bar {
   position: sticky;
-  top: 120px;
-  /* background-color: #f5f5f5; */
-  z-index: 2;
+  top: 125px;
+  z-index: 1;
 }
 .menu {
   z-index: 1;

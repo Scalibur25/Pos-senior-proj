@@ -1,38 +1,38 @@
 <template>
-  <div class="pt-4 px-5">
-    <!-- SEARCH BAR -->
-    <b-row class="search-bar d-flex align-items-center mb-4">
-      <b-button variant="success" @click="modalAddItemActive = true">
-        Add Item</b-button
-      >
-      <b-col cols="8">
-        <b-input-group>
-          <b-form-input type="search" placeholder="Search"></b-form-input>
-          <b-button>
-            <span class="d-flex align-self-center material-icons md-24"
-              >search</span
-            >
-          </b-button>
-        </b-input-group>
-      </b-col>
-      <div>Filter:</div>
-
-      <b-col>
-        <b-form-select
-          v-model="filtering"
-          :options="categoryOption.map((e) => ({ value: e.id, text: e.name }))"
-          >{{ filtering.name }}</b-form-select
+  <div>
+    <!-- SEARCH BAR start -->
+    <div class="pt-4 px-5">
+      <b-row class="search-bar d-flex align-items-center mb-4">
+        <b-button variant="success" @click="modalAddItemActive = true">
+          Add Item</b-button
         >
-      </b-col>
-    </b-row>
-    <!-- <div class="d-flex justify-content-end">
-      <b-input v-model="text" placeholder="Enter your name"></b-input>
-      <b-button variant="success" @click="modalAddItemActive = true">
-        add
-      </b-button>
-    </div> -->
-    <div id="body" class="d-flex">
-      <div class="d-flex justify-content-start flex-wrap">
+        <b-col cols="8">
+          <b-input-group>
+            <b-form-input type="search" placeholder="Search"></b-form-input>
+            <b-button>
+              <span class="d-flex align-self-center material-icons md-24"
+                >search</span
+              >
+            </b-button>
+          </b-input-group>
+        </b-col>
+        <div>Filter:</div>
+
+        <b-col>
+          <b-form-select
+            v-model="filtering"
+            :options="
+              categoryOption.map((e) => ({ value: e.id, text: e.name }))
+            "
+            >{{ filtering.name }}</b-form-select
+          >
+        </b-col>
+      </b-row>
+    </div>
+    <!-- SEARCH BAR end -->
+
+    <div id="body" class="mx-3">
+      <div id="item-menu" class="d-flex justify-content-start flex-wrap">
         <b-card
           v-for="item in items"
           :key="item.id"
@@ -43,33 +43,37 @@
           img-top
           tag="article"
           class="item-card m-1"
-          @click="itemPreviewOn"
+          @click="itemPreviewOn(item)"
         >
+          <!-- <b-card-img class="card-hover"></b-card-img> -->
           <!-- @click="() => {viewItemDetailActive = !viewItemDetailActive;}" -->
           <!-- @click="expandOn(item)" -->
           <b-card-title class="text-truncate">
             {{ item.name }}
           </b-card-title>
           <!-- MINIMIZED view of item card (summary)-->
-          <div v-if="!viewItemDetailActive">
-            <div class="col-sm col-xs-12">
-              Price: THB {{ item.price }} / {{ item.unit }}
-            </div>
-            <div class="col-sm col-xs-12">In-stock: {{ item.quantity }}</div>
-
-            <div class="col-sm col-xs-12 mb-3">
-              <span class="mr-2">Status:</span>
-              <b-icon
-                v-if="item.status"
-                variant="success"
-                icon="circle-fill"
-                font-scale="0.7"
-              ></b-icon>
-              <b-icon v-else icon="circle-fill" font-scale="0.7"></b-icon>
-              <span v-if="item.status" class="ml-1">Available</span>
-              <span v-else class="ml-1">Not available</span>
-            </div>
-          </div>
+          <b-row>
+            <b-col cols="4">
+              <div>Price:</div>
+              <div>In-stock:</div>
+              <div>Status:</div>
+            </b-col>
+            <b-col cols="8">
+              <div>THB {{ item.price }} / {{ item.unit }}</div>
+              <div>{{ item.quantity }}</div>
+              <div>
+                <b-icon
+                  v-if="item.status"
+                  variant="success"
+                  icon="circle-fill"
+                  font-scale="0.7"
+                ></b-icon>
+                <b-icon v-else icon="circle-fill" font-scale="0.7"></b-icon>
+                <span v-if="item.status" class="ml-1">Available</span>
+                <span v-else class="ml-1">Not available</span>
+              </div>
+            </b-col>
+          </b-row>
 
           <!-- EXPANDED view of item card (full details)-->
 
@@ -104,12 +108,74 @@
             </b-col>
           </b-row> -->
 
-          <div class="button--link">Click for more details</div>
+          <!-- <div class="button--link mb-2">Click for more details</div> -->
+
+          <div class="mt-3">
+            <b-button
+              @click="stockOn(item)"
+              variant="primary"
+              size="sm"
+              class="item-btn--stock mr-1"
+              >Add Stock</b-button
+            >
+          </div>
         </b-card>
       </div>
 
       <!-- VIEW ITEM -->
-      <div class="item-preview">hello</div>
+      <div id="item-preview">
+        <img class="item-preview--img" :src="selected.pic" />
+
+        <div class="item-preview--content mx-5">
+          <div class="big my-3">{{ selected.name }}</div>
+          <b-row>
+            <b-col id="item-card--left" cols="3">
+              <div>Price:</div>
+              <div>Cost:</div>
+              <div>In-stock:</div>
+              <div>Status:</div>
+              <div>Category:</div>
+              <div>Note:</div>
+            </b-col>
+            <b-col id="item-card--right" cols="8">
+              <div>THB {{ selected.price }} / {{ selected.unit }}</div>
+              <div>THB {{ selected.cost }} / {{ selected.unit }}</div>
+              <div>{{ selected.quantity }}</div>
+              <div>
+                <b-icon
+                  v-if="selected.status"
+                  variant="success"
+                  icon="circle-fill"
+                  font-scale="0.7"
+                ></b-icon>
+                <b-icon v-else icon="circle-fill" font-scale="0.7"></b-icon>
+                <span v-if="selected.status" class="ml-1">Available</span>
+                <span v-else class="ml-1">Not available</span>
+              </div>
+              <div v-for="cate in selected.category" :key="cate.id">
+                {{ cate.name }}
+              </div>
+              <div>{{ selected.description }}</div>
+            </b-col>
+          </b-row>
+        </div>
+        <div class="item-preivew--btn m-3 d-flex justify-content-end">
+          <b-button
+            @click="editOn(selected)"
+            variant="warning"
+            size="sm"
+            class="item-btn-mini mr-1"
+            >Edit</b-button
+          >
+          <b-button
+            @click="deleteOn(selected)"
+            variant="danger"
+            size="sm"
+            class="item-btn-mini"
+            >Delete</b-button
+          >
+        </div>
+      </div>
     </div>
 
     <!-- <b-button @click="editOn(item)" variant="warning">Edit</b-button> -->
@@ -276,7 +342,7 @@
                 <b-form-input
                   id="input-2"
                   v-model="EditItem.price"
-                  placeholder="Enter Price"
+                  placeholder="Enter product price"
                   type="number"
                   required
                 ></b-form-input> </b-form-group
@@ -290,18 +356,32 @@
                 <b-form-input
                   id="input-3"
                   v-model="EditItem.cost"
-                  placeholder="Enter Cost"
+                  placeholder="Enter product cost"
                   type="number"
                   required
                 ></b-form-input> </b-form-group
             ></b-col>
           </b-row>
+          <b-form-group
+            id="input-group-4"
+            label="In-stock:"
+            label-for="input-instock"
+          >
+            <b-form-input
+              id="input-instock"
+              v-model="EditItem.quantity"
+              type="text"
+              placeholder="Enter product in-stock quantity"
+              required
+            ></b-form-input>
+          </b-form-group>
+
           <b-form-group id="input-group-4" label="Unit:" label-for="input-4">
             <b-form-input
               id="input-4"
               v-model="EditItem.unit"
               type="text"
-              placeholder="Enter Product Name"
+              placeholder="Enter product unit"
               required
             ></b-form-input>
           </b-form-group>
@@ -335,16 +415,17 @@
     </b-modal>
 
     <!-- Stock Item  -->
-    <b-modal
-      v-model="modalStockItemActive"
-      title="Edit Item Stock"
-      @ok="onStock"
-    >
+    <b-modal v-model="modalStockItemActive" title="Stock Item" @ok="onStock">
       <b-form-input
         id="amount"
         type="number"
         v-model="StockItem.amount"
       ></b-form-input>
+    </b-modal>
+
+    <!-- Delete Item  -->
+    <b-modal v-model="modalDeleteItemActive" title="Delete Item" @ok="onDelete">
+      Are you sure you want to delete this item? Action cannot be undone.
     </b-modal>
   </div>
 </template>
@@ -362,12 +443,14 @@ export default {
       modalViewItemActive: false,
       modalEditItemActive: false,
       modalStockItemActive: false,
+      modalDeleteItemActive: false,
       modalMessageActive: false,
       ViewItem: {},
       EditItem: {},
       StockItem: {
         amount: 0,
       },
+      DeleteItem: {},
       text: null,
       form: {
         name: null,
@@ -432,8 +515,13 @@ export default {
 
     async stockOn(item) {
       this.StockItem = { ...this.StockItem, ...item };
-      this.modalViewItemActive = false;
+      // this.modalViewItemActive = false;
       this.modalStockItemActive = true;
+    },
+
+    async deleteOn(item) {
+      this.DeleteItem = { ...this.DeleteItem, ...item };
+      this.modalDeleteItemActive = true;
     },
 
     async onEdit() {
@@ -463,12 +551,10 @@ export default {
         .editItem(body)
         .then((result) => {
           this.items[
-            parseInt(
-              this.items.findIndex((element) => element.id > result.data.id)
-            ) - 1
+            this.items.findIndex((element) => element.id === result.data.id)
           ] = { ...result.data };
-          // this.$forceUpdate();
-          this.reload();
+          this.selected = this.EditItem;
+          this.$forceUpdate();
         })
         .catch((err) => {
           console.log(err);
@@ -489,9 +575,16 @@ export default {
           console.log(err);
         });
       const index = parseInt(
-        this.items.findIndex((element) => element.id > resp.id)
+        this.items.findIndex((element) => element.id === resp.id)
       );
-      this.items[index - 1].quantity = resp.quantity;
+      console.log(index);
+      this.items[index].quantity = resp.quantity;
+      this.$forceUpdate();
+    },
+
+    async onDelete() {},
+    onCancelDelete() {
+      this.DeleteItem = {};
     },
 
     onCancelEdit() {
@@ -527,7 +620,7 @@ export default {
     // },
     async itemPreviewOn(item) {
       this.selected = { ...item };
-      console.log(item);
+      console.log(this.selected);
     },
   },
   created() {
@@ -537,11 +630,6 @@ export default {
 </script>
 
 <style>
-.search-bar {
-  position: sticky;
-  top: 125px;
-  z-index: 1;
-}
 #left {
   width: 55%;
   overflow-y: auto;
@@ -556,35 +644,59 @@ export default {
 .button--link {
   color: #696969;
 }
-.item-card:hover .button--link {
+/* .item-card:hover .button--link {
   color: #303030;
   font-weight: bold;
-  /* border-bottom: 1px solid #303030; */
+  border-bottom: 1px solid #303030;
   cursor: pointer;
 }
+.item-btn:hover .button--link {
+  font-weight: normal;
+  cursor: default;
+  color: #696969;
+} */
+.item-btn--stock {
+  width: 100%;
+}
+
 .big {
   font-size: 1.5em;
 }
 #right {
-  width: 50%;
-  height: 100%;
+  /* width: 50%; */
+  height: 70vh;
   overflow-y: auto;
 }
-.item-preview {
-  background-color: pink;
+#body {
+  position: relative;
+}
+#item-menu {
+  /* position: absolute; */
+  /* left: 0; */
+  width: 80%;
+  /* border: 1px solid blue; */
+}
+#item-preview {
+  background-color: white;
   border: 1px solid #dcdcdc;
   border-radius: 5px;
+  width: 400px;
+  position: fixed;
+  top: 21vh;
+  right: 2vh;
 }
 .item-preview--img {
-  width: 500px;
-  height: 350px;
+  width: inherit;
+  height: 300px;
   object-fit: cover;
   border: 1px solid #dcdcdc;
-  border-radius: 5px;
+  border-radius: 5px 5px 0 0;
   /* float: right; */
 }
-.preview--category {
-  /* color: blue; */
+.item-preivew--btn {
+}
+.item-btn-mini {
+  width: 20%;
 }
 .test {
   border: 1px solid blue;

@@ -19,8 +19,8 @@
       <b-row>
         <b-col>
           <b-table
+            sticky-header="75vh"
             bordered
-            sticky-header
             select-mode="single"
             head-variant="secondary"
             hover
@@ -29,13 +29,13 @@
             @row-selected="onRowSelected"
             :fields="[
               { key: 'orderId', label: 'Order id' },
-              { key: 'createAt', label: 'Datetime created' },
+              { key: 'createAt', label: 'Datetime created', sortable: false },
             ]"
           >
             <template #cell(index)="data">
               {{ data.index + 1 }}
             </template>
-            <template #table-caption>caption is here naka</template>
+            <!-- <template #table-caption>caption is here naka</template> -->
             <template #cell(Order-Details)></template>
           </b-table>
         </b-col>
@@ -104,6 +104,7 @@
           <b-form-radio value="pdf">PDF</b-form-radio>
         </b-form-radio-group>
       </b-form-group>
+
       <vue-excel-xlsx
         v-if="exportChoice == 'elsx'"
         :data="itemExcel"
@@ -117,18 +118,92 @@
       </vue-excel-xlsx>
       <vue-blob-json-csv
         v-if="exportChoice == 'json'"
-        class="custom-btn"
+        class="custom-btn btn-json"
         tag-name="div"
         file-type="json"
         file-name="OrderHistory"
         title="Download JSON"
         :data="itemJson"
       ></vue-blob-json-csv>
+
+      <vue-html2pdf
+        :show-layout="false"
+        :float-layout="true"
+        :enable-download="false"
+        :preview-modal="true"
+        :paginate-elements-by-height="1400"
+        filename="OrderHistory"
+        :pdf-quality="2"
+        :manual-pagination="true"
+        pdf-format="a4"
+        pdf-orientation="portrait"
+        pdf-content-width="100%"
+        @progress="onProgress($event)"
+        @hasStartedGeneration="hasStartedGeneration()"
+        @hasGenerated="hasGenerated($event)"
+        ref="html2Pdf"
+      >
+        <section slot="pdf-content">
+          <!-- PDF Content Here -->
+          <div
+            class="html2pdf__page-break mx-5 my-3"
+            v-for="item in items"
+            :key="item.id"
+          >
+            <div class="d-flex flex-column align-items-center bottom-line py-5">
+              <div>ORDER ID: {{ selected.orderId }}</div>
+              <div>DATETIME CREATED: {{ toDateString(item.createAt) }}</div>
+            </div>
+            <div class="bottom-line px-3 py-3">
+              <div
+                v-for="run in item.itemList"
+                :key="run.id"
+                class="d-flex justify-content-between mb-3"
+              >
+                <div>{{ run.quantity }} x {{ run.Item.name }}</div>
+                <div>{{ run.price }}</div>
+                <div>{{ run.quantity * run.price }}</div>
+              </div>
+              <div>
+                <div>Subtotal: {{ item.price }}</div>
+                <div>Discount: {{ item.discount }}</div>
+              </div>
+            </div>
+
+            <div
+              class="preview-order--total d-flex justify-content-between bottom-line px-3 py-3"
+            >
+              <div>Total:</div>
+              <div>{{ item.price - item.discount }}</div>
+            </div>
+            <div class="px-3 py-3">
+              <div>Note : {{ item.note }}</div>
+            </div>
+          </div>
+        </section>
+      </vue-html2pdf>
+      <button
+        v-if="exportChoice == 'xml'"
+        class="custom-btn"
+        @click="createAndOpenFile()"
+      >
+        Download XML
+      </button>
+      <button
+        v-if="exportChoice == 'pdf'"
+        class="custom-btn"
+        @click="generateReport()"
+      >
+        Download PDF
+      </button>
     </b-modal>
   </div>
 </template>
 <script>
 import api from "../apis";
+import FileSaver from "file-saver";
+import VueHtml2pdf from "vue-html2pdf";
+
 export default {
   data() {
     return {
@@ -156,6 +231,9 @@ export default {
       ],
     };
   },
+  components: {
+    VueHtml2pdf,
+  },
   computed: {
     itemsOption() {
       return this.items.map((e) => {
@@ -176,6 +254,36 @@ export default {
     },
   },
   methods: {
+    generateReport() {
+      this.$refs.html2Pdf.generatePdf();
+    },
+    JSONtoXML(obj) {
+      let xml = "";
+      for (let prop in obj) {
+        xml += obj[prop] instanceof Array ? "" : "<" + prop + ">";
+        if (obj[prop] instanceof Array) {
+          for (let array in obj[prop]) {
+            xml += "\n<" + prop + ">\n";
+            xml += this.JSONtoXML(new Object(obj[prop][array]));
+            xml += "</" + prop + ">";
+          }
+        } else if (typeof obj[prop] == "object") {
+          xml += this.JSONtoXML(new Object(obj[prop]));
+        } else {
+          xml += obj[prop];
+        }
+        xml += obj[prop] instanceof Array ? "" : "</" + prop + ">\n";
+      }
+      xml = xml.replace(/<\/?[0-9]{1,}>/g, "");
+      return xml;
+    },
+    createAndOpenFile() {
+      const xml = this.JSONtoXML(this.itemJson);
+      var blob = new Blob([xml], {
+        type: "text/plain;charset=utf-8",
+      });
+      FileSaver.saveAs(blob, "order.xml");
+    },
     exportOn() {},
     toDateString(date) {
       const dd = new Date(date);
@@ -246,6 +354,7 @@ export default {
         });
     },
   },
+
   created() {
     this.initPage();
   },
@@ -260,6 +369,9 @@ export default {
   background-color: pink;
   border: 1px solid #dcdcdc;
   border-radius: 5px;
+  position: sticky;
+  top: 180px;
+  z-index: 1;
 }
 .preview-order--total {
   font-size: 2em;
@@ -284,4 +396,10 @@ export default {
   border: 3px solid rgb(40, 167, 69);
   opacity: 0.3;
 } */
+.btn-json {
+  width: 145px;
+}
+.item-pdf {
+  page-break-after: always;
+}
 </style>

@@ -239,11 +239,6 @@ export default {
 </script>
 
 <style>
-.search-bar {
-  position: sticky;
-  top: 125px;
-  z-index: 1;
-}
 .menu {
   z-index: 1;
   max-width: 1000px;

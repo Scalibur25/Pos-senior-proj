@@ -22,11 +22,13 @@
     "vue": "^2.7.10",
     "vue-blob-json-csv": "^0.1.7",
     "vue-excel-xlsx": "^1.2.2",
+    "vue-html2pdf": "^1.8.0",
     "vue-json-csv": "^2.1.0",
     "vue-material-design-icons": "^5.1.2",
     "vue-router": "^3.5.1",
     "vue-sphinx-xml": "^0.4.2",
-    "xlsx": "^0.18.5"
+    "xlsx": "^0.18.5",
+    "xml-js": "^1.6.11"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",

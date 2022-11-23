@@ -2,15 +2,15 @@
   <div id="app">
     <nav class="px-4 d-flex align-items-center">
       <div id="essist">ESSIST</div>
-      <router-link to="/">Home</router-link>
-      <span>|</span>
       <router-link to="/store">Storefront</router-link>
       <span>|</span>
       <router-link to="/stock">Stock Management</router-link>
       <span>|</span>
-      <router-link to="/history">Sales History</router-link>
+      <router-link to="/history">Order History</router-link>
       <span>|</span>
       <router-link to="/category">Category Management</router-link>
+      <!-- <span>|</span>
+      <router-link to="/pdf">PDFcontent</router-link> -->
     </nav>
     <router-view class="router-view" />
   </div>
@@ -58,5 +58,10 @@ nav span {
 .router-view {
   background-color: #f5f5f5;
   min-height: 88vh;
+}
+.search-bar {
+  position: sticky;
+  top: 125px;
+  z-index: 1;
 }
 </style>

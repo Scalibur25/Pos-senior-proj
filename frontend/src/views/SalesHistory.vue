@@ -19,6 +19,7 @@
       <b-row>
         <b-col>
           <b-table
+            class="table-bg"
             sticky-header="75vh"
             bordered
             select-mode="single"
@@ -90,6 +91,11 @@
       title="Export order history"
       @ok="exportOn"
       hide-footer="true"
+      @hide="
+        () => {
+          exportChoice = {};
+        }
+      "
     >
       <b-form-group label="Select file type" v-slot="{ ariaDescribedby }">
         <b-form-radio-group
@@ -98,18 +104,18 @@
           :aria-describedby="ariaDescribedby"
           name="radio-sub-component"
         >
-          <b-form-radio value="elsx">ELSX</b-form-radio>
           <b-form-radio value="json">JSON</b-form-radio>
-          <b-form-radio value="xml">XML</b-form-radio>
           <b-form-radio value="pdf">PDF</b-form-radio>
+          <b-form-radio value="xlsx">XLSX</b-form-radio>
+          <b-form-radio value="xml">XML</b-form-radio>
         </b-form-radio-group>
       </b-form-group>
 
       <vue-excel-xlsx
-        v-if="exportChoice == 'elsx'"
+        v-if="exportChoice == 'xlsx'"
         :data="itemExcel"
         :columns="columns"
-        :file-name="'filename'"
+        :file-name="'orderHistory'"
         :file-type="'xlsx'"
         :sheet-name="'sheetname'"
         class="custom-btn"
@@ -121,18 +127,18 @@
         class="custom-btn btn-json"
         tag-name="div"
         file-type="json"
-        file-name="OrderHistory"
+        file-name="orderHistory"
         title="Download JSON"
         :data="itemJson"
       ></vue-blob-json-csv>
 
       <vue-html2pdf
+        :enable-download="true"
+        :preview-modal="false"
         :show-layout="false"
         :float-layout="true"
-        :enable-download="false"
-        :preview-modal="true"
         :paginate-elements-by-height="1400"
-        filename="OrderHistory"
+        filename="orderHistory"
         :pdf-quality="2"
         :manual-pagination="true"
         pdf-format="a4"
@@ -282,7 +288,7 @@ export default {
       var blob = new Blob([xml], {
         type: "text/plain;charset=utf-8",
       });
-      FileSaver.saveAs(blob, "order.xml");
+      FileSaver.saveAs(blob, "orderHistory.xml");
     },
     exportOn() {},
     toDateString(date) {
@@ -366,7 +372,7 @@ export default {
   height: 100%;
 }
 .preview-order {
-  background-color: pink;
+  background-color: white;
   border: 1px solid #dcdcdc;
   border-radius: 5px;
   position: sticky;

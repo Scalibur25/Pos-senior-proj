@@ -59,9 +59,16 @@ nav span {
   background-color: #f5f5f5;
   min-height: 88vh;
 }
-.search-bar {
-  position: sticky;
-  top: 125px;
-  z-index: 1;
+.test {
+  border: 1px solid blue;
+}
+.bold {
+  font-weight: bold;
+}
+.item-card {
+  width: 320px;
+}
+.outer {
+  position: relative;
 }
 </style>

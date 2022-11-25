@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="outer">
     <!-- SEARCH BAR start -->
     <div class="pt-4 px-5">
       <b-row class="search-bar d-flex align-items-center mb-4">
@@ -31,8 +31,8 @@
     </div>
     <!-- SEARCH BAR end -->
 
-    <div id="body" class="mx-3">
-      <div id="item-menu" class="d-flex justify-content-start flex-wrap">
+    <div id="body">
+      <div class="item-menu d-flex justify-content-start flex-wrap mx-5">
         <b-card
           v-for="item in items"
           :key="item.id"
@@ -123,7 +123,7 @@
       </div>
 
       <!-- VIEW ITEM -->
-      <div id="item-preview">
+      <div class="item-preview">
         <img class="item-preview--img" :src="selected.pic" />
 
         <div class="item-preview--content mx-5">
@@ -582,7 +582,6 @@ export default {
       this.$forceUpdate();
     },
 
-    async onDelete() {},
     onCancelDelete() {
       this.DeleteItem = {};
     },
@@ -622,6 +621,14 @@ export default {
       this.selected = { ...item };
       console.log(this.selected);
     },
+    async onDelete(index) {
+      console.log(index);
+      await api.deleteItem(index).then((result) => {
+        if (result.status === 200) {
+          this.items = this.items.filter((e) => e.id !== result.data.id);
+        }
+      });
+    },
   },
   created() {
     this.initPage();
@@ -630,35 +637,9 @@ export default {
 </script>
 
 <style>
-#left {
-  width: 55%;
-  overflow-y: auto;
-}
-.item-card {
-  width: 320px;
-}
-.item-card--img {
-  object-fit: cover;
-  /* background-color: green; */
-}
-.button--link {
-  color: #696969;
-}
-/* .item-card:hover .button--link {
-  color: #303030;
-  font-weight: bold;
-  border-bottom: 1px solid #303030;
-  cursor: pointer;
-}
-.item-btn:hover .button--link {
-  font-weight: normal;
-  cursor: default;
-  color: #696969;
-} */
 .item-btn--stock {
   width: 100%;
 }
-
 .big {
   font-size: 1.5em;
 }
@@ -670,20 +651,17 @@ export default {
 #body {
   position: relative;
 }
-#item-menu {
-  /* position: absolute; */
-  /* left: 0; */
-  width: 80%;
-  /* border: 1px solid blue; */
+.item-menu {
+  width: 70vw;
 }
-#item-preview {
+.item-preview {
   background-color: white;
   border: 1px solid #dcdcdc;
   border-radius: 5px;
-  width: 400px;
+  width: 30vw;
   position: fixed;
   top: 21vh;
-  right: 2vh;
+  right: 5vh;
 }
 .item-preview--img {
   width: inherit;
@@ -693,15 +671,7 @@ export default {
   border-radius: 5px 5px 0 0;
   /* float: right; */
 }
-.item-preivew--btn {
-}
 .item-btn-mini {
   width: 20%;
-}
-.test {
-  border: 1px solid blue;
-}
-.bold {
-  font-weight: bold;
 }
 </style>

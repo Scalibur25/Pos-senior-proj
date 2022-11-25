@@ -1,58 +1,68 @@
 <template>
-  <div class="pt-4 px-5">
-    <b-row class="search-bar d-flex align-items-center mb-4">
-      <b-col cols="8">
-        <b-input-group>
-          <b-form-input type="search" placeholder="Search"></b-form-input>
-          <b-button>
-            <span class="d-flex align-self-center material-icons md-24"
-              >search</span
-            >
-          </b-button>
-        </b-input-group>
-      </b-col>
-      <b-col cols="4">
-        <!-- <span class="d-none d-xl-inline">Filter:</span> -->
-        <span>Filter:</span>
-        <b-dropdown id="dropdown-category" text="Category" class="m-md-2">
-          <b-dropdown-item>category1</b-dropdown-item>
-        </b-dropdown>
-      </b-col>
-    </b-row>
-    <b-row>
-      <b-col>
-        <div class="menu d-flex flex-wrap">
-          <b-overlay
-            v-for="item in items"
-            :key="item.id"
-            :show="item.quantity < 1"
-            spinner-variant="primary"
-            spinner-type="grow"
-            spinner-small
-            rounded="sm"
-            style="max-width: 320px"
+  <div>
+    <!-- SEARCH BAR start -->
+    <div class="pt-4 px-5">
+      <b-row class="search-bar d-flex align-items-center mb-4">
+        <b-col cols="8">
+          <b-input-group>
+            <b-form-input type="search" placeholder="Search"></b-form-input>
+            <b-button>
+              <span class="d-flex align-self-center material-icons md-24"
+                >search</span
+              >
+            </b-button>
+          </b-input-group>
+        </b-col>
+        <div>Filter:</div>
+
+        <b-col>
+          <b-form-select
+            v-model="filtering"
+            :options="
+              categoryOption.map((e) => ({ value: e.id, text: e.name }))
+            "
+            >{{ filtering.name }}</b-form-select
           >
-            <template #overlay>
-              <b-icon
-                icon="stopwatch"
-                variant="info"
-                scale="2"
-                shift-v="8"
-                shift-h="8"
-                class="position-absolute"
-                style="top: 0; right: 0"
-              ></b-icon>
-            </template>
-            <b-card
-              :img-src="item.pic"
-              img-alt="Image"
-              img-top
-              tag="article"
-              class="mb-2 menu--b-card"
-              @click="addToCard(item)"
-            >
-              <b-card-title>{{ item.name }}</b-card-title>
-              <div class="card--price">
+        </b-col>
+      </b-row>
+    </div>
+    <!-- SEARCH BAR end -->
+    <b-row id="body" class="mx-5">
+      <div class="item-menu d-flex justify-content-start flex-wrap">
+        <b-overlay
+          v-for="item in items"
+          :key="item.id"
+          :show="item.quantity < 1"
+          spinner-variant="primary"
+          spinner-type="grow"
+          spinner-small
+          rounded="sm"
+          style="max-width: 320px"
+          class="m-1"
+        >
+          <template #overlay>
+            <b-icon
+              icon="stopwatch"
+              variant="info"
+              scale="2"
+              shift-v="8"
+              shift-h="8"
+              class="position-absolute"
+              style="top: 0; right: 0"
+            ></b-icon>
+          </template>
+          <b-card
+            :img-src="item.pic"
+            :img-alt="item.pic"
+            img-height="190"
+            img-width="350"
+            img-top
+            tag="article"
+            class="item-card"
+            @click="addToCart(item)"
+          >
+            <b-card-title>{{ item.name }}</b-card-title>
+            <!-- <div class="card--price">
                 <span class="me-2">Price:</span>
                 <span class="bold bigger">{{ item.price }}</span>
                 <span class="mx-2">/</span>
@@ -73,12 +83,31 @@
               <div>
                 <span class="me-2">In-stock:</span>
                 <span>{{ item.quantity }}</span>
-              </div>
-            </b-card>
-          </b-overlay>
-        </div>
-      </b-col>
-      <b-col cols="4" class="col--2">
+              </div> -->
+            <b-row>
+              <b-col cols="4">
+                <div>Price:</div>
+                <div>In-stock:</div>
+                <div>Category:</div>
+              </b-col>
+              <b-col cols="8">
+                <div>THB {{ item.price }} / {{ item.unit }}</div>
+                <div>{{ item.quantity }}</div>
+                <div
+                  v-for="cate in item.category"
+                  :key="cate.id"
+                  variant="outline-info"
+                  size="sm"
+                  pill
+                >
+                  {{ cate.name }}
+                </div>
+              </b-col>
+            </b-row>
+          </b-card>
+        </b-overlay>
+      </div>
+      <b-col cols="4" class="item-cart">
         <b-list-group class="item-list mb-3">
           <b-list-group-item
             v-for="car in cart"
@@ -103,30 +132,32 @@
                 :min="1"
                 :max="car.quantity"
                 inline
-              ></b-form-spinbutton>
+              >
+              </b-form-spinbutton>
             </span>
             <span class="mx-2 text-truncate">{{ car.name }}</span>
             <span>{{ car.price }}</span>
           </b-list-group-item>
         </b-list-group>
-        <b-card>
-          <div class="d-flex align-items-center mb-3">
-            <span class="m-r-10">Discount:</span>
-            <b-form-input
-              class="m-r-10"
-              placeholder="add discount of this order"
-              type="number"
-              v-model="discount"
-            ></b-form-input>
-            <span>{{ discount }}</span>
-          </div>
-          <div class="d-flex align-items-center mb-3">
-            <span class="m-r-10">Note:</span>
-            <b-form-textarea
-              v-model="noteOrder"
-              placeholder="Add item desccription ..."
-            ></b-form-textarea>
-          </div>
+        <b-card class="p-3">
+          <b-row>
+            <b-col cols="33">
+              <div class="mt-1 mb-3">Discount:</div>
+              <div class="">Note:</div>
+            </b-col>
+            <b-col cols="">
+              <b-form-input
+                class="mb-1"
+                placeholder="add discount of this order"
+                type="number"
+                v-model="discount"
+              ></b-form-input>
+              <b-form-textarea
+                v-model="noteOrder"
+                placeholder="Add item desccription ..."
+              ></b-form-textarea>
+            </b-col>
+          </b-row>
         </b-card>
         <b-button
           class="buttons--submit mt-3 d-flex align-items-center justify-content-between"
@@ -141,9 +172,12 @@
           }}</span>
           <span>SUBMIT ORDER</span>
         </b-button>
+        <div class="error-submit error mt-1" v-if="errorSubmit">
+          Please select an item before submitting an order.
+        </div>
       </b-col>
     </b-row>
-    <b-modal v-model="confirmOrderModal" @ok="createOrder"
+    <b-modal title="Submit order" v-model="confirmOrderModal" @ok="createOrder"
       >Are you sure you want to submit this order?</b-modal
     >
   </div>
@@ -160,10 +194,13 @@ export default {
       amount: 50,
       cart: [],
       paidStatus: false,
-      // BootstrapVue switch checkbox
       checked: false,
       discount: 0,
       noteOrder: "",
+      filtering: {},
+      categoryOption: [],
+      errorSubmit: false,
+      count: 0,
     };
   },
   methods: {
@@ -177,8 +214,16 @@ export default {
         .catch((err) => {
           console.log(err);
         });
+      await api
+        .getCategory()
+        .then((result) => {
+          this.categoryOption = [...result.data];
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
-    addToCard(target) {
+    addToCart(target) {
       const initCartBody = {
         amount: 1,
         quantity: target.quantity,
@@ -206,6 +251,13 @@ export default {
 
     calculateModelOrder() {
       this.confirmOrderModal = this.cart.length > 0 ? true : false;
+      this.count = 1;
+      if (this.confirmOrderModal == false && this.count != 0) {
+        this.errorSubmit = true;
+      } else {
+        this.errorSubmit = false;
+      }
+      this.count = 0;
     },
 
     async createOrder() {
@@ -241,12 +293,9 @@ export default {
 <style>
 .menu {
   z-index: 1;
-  max-width: 1000px;
 }
 .menu--b-card {
-  margin: 6px;
-  /* width: 14rem; */
-  max-width: 20rem;
+  width: 320px;
 }
 .m-r-10 {
   margin-right: 10px;
@@ -258,24 +307,10 @@ export default {
   position: fixed;
   right: 50px;
 }
-.item-list {
-  /* margin-top: 6px; */
-  height: 350px;
-  background-color: white;
-  position: sticky;
-  top: 190px;
-  overflow-y: auto;
-}
-.item-list--child {
-  padding: 10px;
-  width: 100%;
-}
+
 .buttons--submit {
   height: 60px;
   width: 100%;
-}
-.bold {
-  font-weight: bold;
 }
 .bigger {
   font-size: 1.25em;
@@ -286,5 +321,28 @@ export default {
 }
 .input-group button {
   border: none;
+}
+.error {
+  color: red;
+}
+.item-menu {
+  width: 70vw;
+}
+.item-cart {
+  width: 30vw;
+  position: fixed;
+  top: 20vh;
+  right: 2vw;
+}
+.item-list {
+  height: 350px;
+  background-color: white;
+  position: sticky;
+  top: 190px;
+  overflow-y: auto;
+}
+.item-list--child {
+  padding: 10px;
+  width: 100%;
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="pt-4 px-5">
+  <div class="outer pt-4 px-5">
     <b-row class="search-bar d-flex align-items-center pb-2">
       <b-button variant="success" @click="modalAddCategoryActive = true">
         Add category</b-button
@@ -98,7 +98,6 @@
           ></b-form-input>
         </b-form-group>
       </form>
-      {{ EditCategory }}
     </b-modal>
 
     <!-- Confirm Delete Category -->
@@ -112,7 +111,7 @@
         }
       "
     >
-      Are you sure you want to delete this category?
+      Are you sure you want to delete this category? Action cannot be undone.
     </b-modal>
   </div>
 </template>

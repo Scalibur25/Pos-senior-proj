@@ -7,14 +7,12 @@ const methods = {
       const items = await categoryService.get(); 
       return res.json(items)
     } catch (error) {
-      console.log(error)
       return res.status(500).json(error)
     }
   },
 
   async getById(req, res) {
     const id = req.params.id
-    console.log(id)
     try {
       const items = await categoryService.getById(id); 
       if(items){
@@ -34,7 +32,6 @@ const methods = {
       const items = await categoryService.create(data); 
       return res.json(items)
     } catch (error) {
-      console.log(error)
       return res.status(500).json(error)
     }
   },
@@ -46,7 +43,6 @@ const methods = {
       const items = await categoryService.update(id,data); 
       return res.json(items)
     } catch (error) {
-      console.log(error)
       return res.status(500).json(error)
     }
   },
@@ -57,7 +53,6 @@ const methods = {
       const items = await categoryService.delete(id); 
       return res.json(items)
     } catch (error) {
-      console.log(error)
       return res.status(500).json(error)
     }
   },

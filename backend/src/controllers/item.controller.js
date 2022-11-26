@@ -3,13 +3,16 @@ const itemService = require('../services/item.service')
 const methods = {
 
   async getItems(req, res) {
+
     const status = req.query?.status ? req.query?.status : 'null'
-    console.log(status)
+    const filterBy = req.query?.filterBy
+    const filterVal = req.query?.filterVal
+    const search = req.query?.search
     try {
-      const items = await itemService.getItems(status); 
+      const items = await itemService.getItems(status, { search, filterBy, filterVal });
       return res.json(items)
     } catch (error) {
-      console.log(error)
+      //console.log(error)
       return res.status(500).json(error)
     }
   },
@@ -17,12 +20,12 @@ const methods = {
   async getItemsById(req, res) {
     const id = req.params.id
     try {
-      const items = await itemService.getItemById(id); 
-      if(items){
+      const items = await itemService.getItemById(id);
+      if (items) {
         return res.json(items)
-        
-      }else{
-        return res.status(404).json({message: `item id: ${id} not found`})
+
+      } else {
+        return res.status(404).json({ message: `item id: ${id} not found` })
       }
     } catch (error) {
       return res.status(500).json(error)
@@ -32,10 +35,9 @@ const methods = {
   async createItems(req, res) {
     const { data } = req.body
     try {
-      const items = await itemService.createItems(data); 
+      const items = await itemService.createItems(data);
       return res.json(items)
     } catch (error) {
-      console.log(error)
       return res.status(500).json(error)
     }
   },
@@ -44,10 +46,9 @@ const methods = {
     const { id } = req.params
     const { data } = req.body
     try {
-      const items = await itemService.updateItems(id,data); 
+      const items = await itemService.updateItems(id, data);
       return res.json(items)
     } catch (error) {
-      console.log(error)
       return res.status(500).json(error)
     }
   },
@@ -55,10 +56,9 @@ const methods = {
   async deleteItems(req, res) {
     const { id } = req.params
     try {
-      const items = await itemService.deleteItems(id); 
+      const items = await itemService.deleteItems(id);
       return res.json(items)
     } catch (error) {
-      console.log(error)
       return res.status(500).json(error)
     }
   },

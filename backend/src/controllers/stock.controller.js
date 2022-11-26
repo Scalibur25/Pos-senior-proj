@@ -9,14 +9,12 @@ const methods = {
       const items = await stockService.get(); 
       return res.json(items)
     } catch (error) {
-      console.log(error)
       return res.status(500).json(error)
     }
   },
 
   async getById(req, res) {
     const id = req.params.id
-    console.log(id)
     try {
       const items = await stockService.getById(id); 
       if(items){
@@ -37,10 +35,8 @@ const methods = {
         increment: data.amount,
       }}
       const [stock,items] = await Promise.all([stockService.create(data), itemService.updateItems(data.itemId, quantityUpdate)])
-      console.log(stock,items)
       return res.json(items)
     } catch (error) {
-      console.log(error)
       return res.status(500).json(error)
     }
   },
@@ -52,7 +48,6 @@ const methods = {
       const items = await stockService.update(id,data); 
       return res.json(items)
     } catch (error) {
-      console.log(error)
       return res.status(500).json(error)
     }
   },
@@ -63,7 +58,6 @@ const methods = {
       const items = await stockService.delete(id); 
       return res.json(items)
     } catch (error) {
-      console.log(error)
       return res.status(500).json(error)
     }
   },

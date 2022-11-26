@@ -111,7 +111,7 @@
         }
       "
     >
-      Are you sure you want to delete this category? Action cannot be undone.
+      Are you sure you want to delete this category?
     </b-modal>
   </div>
 </template>
@@ -143,10 +143,10 @@ export default {
       await api
         .getCategory()
         .then((result) => {
-          console.log(result);
+          // console.log(result);
           this.items = result.data.map((e) => {
             const v = e;
-            console.log(e);
+            //console.log(e);
             v.count = e._count.item;
             return v;
           });
@@ -159,7 +159,7 @@ export default {
       this.addCategory();
     },
     async onDelete(index) {
-      console.log(index);
+      //console.log(index);
       await api.deleteCategory(index).then((result) => {
         if (result.status === 200) {
           this.items = this.items.filter((e) => e.id !== result.data.id);

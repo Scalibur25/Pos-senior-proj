@@ -5,7 +5,9 @@
       <b-row class="search-bar d-flex align-items-center mb-4">
         <b-col cols="8">
           <b-input-group>
-            <b-form-input type="search" placeholder="Search"></b-form-input>
+            <b-form-input v-model="search" type="search" placeholder="Search">{{
+              search
+            }}</b-form-input>
             <b-button>
               <span class="d-flex align-self-center material-icons md-24"
                 >search</span
@@ -189,6 +191,7 @@ import api from "../apis";
 export default {
   data() {
     return {
+      search: "",
       confirmOrderModal: false,
       items: [],
       amount: 50,
@@ -208,7 +211,7 @@ export default {
       await api
         .getReadyItems()
         .then((result) => {
-          console.log(result);
+          //console.log(result);
           this.items = [...result.data];
         })
         .catch((err) => {
@@ -240,7 +243,7 @@ export default {
       } else {
         target.quantity > 0 ? this.cart.push(initCartBody) : this.cart;
       }
-      console.log(this.cart);
+      //console.log(this.cart);
     },
     removeFromCart(target) {
       this.cart = this.cart.filter((value) => value.id !== target);
@@ -261,9 +264,9 @@ export default {
     },
 
     async createOrder() {
-      console.log(this.noteOrder);
+      //console.log(this.noteOrder);
       const stt = this.cart.reduce((a, b) => b.amount * b.price + a, 0);
-      console.log(stt);
+      //console.log(stt);
       await api
         .createOrder({
           price: stt,
@@ -283,9 +286,46 @@ export default {
           console.log(err);
         });
     },
+
+    async searchOrfilter(
+      data = { search: undefined, filterBy: undefined, filterVal: undefined }
+    ) {
+      //console.log(data);
+      await api
+        .getReadyItems(data)
+        .then((result) => {
+          //console.log(result);
+          this.items = [...result.data];
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
   },
   created() {
     this.initPage();
+  },
+  watch: {
+    filtering: {
+      handler(newValue) {
+        this.searchOrfilter({ filterBy: "category", filterVal: newValue });
+
+        // Note: `newValue` will be equal to `oldValue` here
+        // on nested mutations as long as the object itself
+        // hasn't been replaced.
+      },
+      deep: true,
+    },
+    search: {
+      handler(newValue) {
+        this.searchOrfilter({ ...this.filtering, search: newValue });
+
+        // Note: `newValue` will be equal to `oldValue` here
+        // on nested mutations as long as the object itself
+        // hasn't been replaced.
+      },
+      deep: true,
+    },
   },
 };
 </script>

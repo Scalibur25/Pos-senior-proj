@@ -3,8 +3,20 @@ const short = require("short-uuid");
 const prisma = new PrismaClient();
 
 const methods = {
-  async get() {
+  async get(search = undefined) {
+    console.log(search)
+    const searchOption = search ? {
+      orderId: {
+        contains: search
+      }
+    } : {}
+
+    const whereOption = {
+      where: { ...searchOption }
+    }
+
     return prisma.order.findMany({
+      ...whereOption,
       include: {
         itemList: {
           include: {
@@ -37,7 +49,6 @@ const methods = {
   async create(data) {
     const decimalTranslator = short("0123456789").generate();
     const paidAt = data.paidAt ? { paidAt: new Date() } : {};
-    console.log(data.note)
     const result = prisma.order.create({
       data: {
         price: data.price,

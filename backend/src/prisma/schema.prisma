@@ -16,7 +16,7 @@ model Address {
 }
 
 model Order {
-  orderId        Int       @id
+  orderId        String    @id
   createAt       DateTime  @default(now())
   paidAt         DateTime?
   picPaid        String?
@@ -36,7 +36,7 @@ model itemList {
   note     String?
   quantity Int
   price    Int
-  orderId  Int
+  orderId  String
   itemId   String
 
   Item    item  @relation(fields: [itemId], references: [id])
@@ -51,7 +51,7 @@ model item {
   cost        Int
   unit        String
   name        String
-  pic         String @db.VarChar(1000)
+  pic         String  @db.VarChar(1000)
   description String? @db.VarChar(1000)
   status      Boolean @default(false)
   quantity    Int

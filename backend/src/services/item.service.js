@@ -3,54 +3,88 @@ const prisma = new PrismaClient();
 
 const methods = {
 
-  async getItems(status) {
-    const statusOption = status === 'null'? {} : {status:Boolean(status)}
-    return prisma.item.findMany({
-      where:{
-        ...statusOption
+  async getItems(status, Option = {
+    search: undefined,
+    filterBy: undefined,
+    filterVal: undefined,
+  }) {
+    const searchOption = Option.search ? {
+      OR: [{
+        name: {
+          contains: Option.search,
+        }
+      }, {
+        description: {
+          contains: Option.search,
+        }
+      }]
+    } : {};
+    let filterByOption = {};
+
+    if (Option.filterBy) {
+      if (Option.filterBy === 'category') filterByOption = {
+        category: {
+          some: {
+            id: Option.filterVal
+          }
+        }
+      }
+      else filterByOption = {}
+    }
+
+    const statusOption = status === 'null' ? {} : { status: Boolean(status) }
+    const data = await prisma.item.findMany({
+      where: {
+        ...statusOption,
+        ...searchOption,
+        ...filterByOption,
+
       },
-      orderBy:[{
+      orderBy: [{
         status: 'desc'
-      },{
+      }, {
         quantity: 'desc'
       }],
       include: {
         category: true,
       }
     })
+    return data
   },
 
 
-  async orderItemsCheck(id,amount) {
+  async orderItemsCheck(id, amount) {
     return prisma.item.findFirst({
-      where:{ id ,
-      quantity: {
-        gte: amount
-      }}
+      where: {
+        id,
+        quantity: {
+          gte: amount
+        }
+      }
     })
   },
 
   async getItemById(id) {
     return prisma.item.findUnique({
-      where:{
+      where: {
         id: id
       }
     })
   },
 
-  async createItems(data){
+  async createItems(data) {
     return prisma.item.create({
       data,
-      include:{
-        category:true
+      include: {
+        category: true
       }
     })
   },
 
-  async updateItems(id,data){
+  async updateItems(id, data) {
     return prisma.item.update({
       data,
-      where:{
+      where: {
         id
       },
       include: {
@@ -59,9 +93,9 @@ const methods = {
     })
   },
 
-  async deleteItems(id){
+  async deleteItems(id) {
     return prisma.item.delete({
-      where:{
+      where: {
         id: id
       }
     })

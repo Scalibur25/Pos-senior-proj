@@ -8,7 +8,9 @@
         >
         <b-col cols="8">
           <b-input-group>
-            <b-form-input type="search" placeholder="Search"></b-form-input>
+            <b-form-input v-model="search" type="search" placeholder="Search">
+              {{ search }}</b-form-input
+            >
             <b-button>
               <span class="d-flex align-self-center material-icons md-24"
                 >search</span
@@ -26,6 +28,9 @@
             "
             >{{ filtering.name }}</b-form-select
           >
+        </b-col>
+        <b-col>
+          <b-button @click="onClearFilter()">Clear</b-button>
         </b-col>
       </b-row>
     </div>
@@ -123,7 +128,7 @@
       </div>
 
       <!-- VIEW ITEM -->
-      <div class="item-preview">
+      <div v-if="selected !== null" class="item-preview">
         <img class="item-preview--img" :src="selected.pic" />
 
         <div class="item-preview--content mx-5">
@@ -425,7 +430,7 @@
 
     <!-- Delete Item  -->
     <b-modal v-model="modalDeleteItemActive" title="Delete Item" @ok="onDelete">
-      Are you sure you want to delete this item? Action cannot be undone.
+      Are you sure you want to delete this item?
     </b-modal>
   </div>
 </template>
@@ -436,6 +441,7 @@ import api from "@/apis";
 export default {
   data() {
     return {
+      search: "",
       showDismissibleAlert: false,
       items: [],
       categoryOption: [],
@@ -519,6 +525,12 @@ export default {
       this.modalStockItemActive = true;
     },
 
+    async onClearFilter() {
+      this.initPage();
+      this.filtering = {};
+      this.search = "";
+    },
+
     async deleteOn(item) {
       this.DeleteItem = { ...this.DeleteItem, ...item };
       this.modalDeleteItemActive = true;
@@ -577,7 +589,7 @@ export default {
       const index = parseInt(
         this.items.findIndex((element) => element.id === resp.id)
       );
-      console.log(index);
+      //console.log(index);
       this.items[index].quantity = resp.quantity;
       this.$forceUpdate();
     },
@@ -619,19 +631,57 @@ export default {
     // },
     async itemPreviewOn(item) {
       this.selected = { ...item };
-      console.log(this.selected);
+      //console.log(this.selected);
     },
-    async onDelete(index) {
-      console.log(index);
-      await api.deleteItem(index).then((result) => {
+    async onDelete() {
+      await api.deleteItem(this.selected.id).then((result) => {
         if (result.status === 200) {
           this.items = this.items.filter((e) => e.id !== result.data.id);
+          this.selected = null;
         }
       });
+    },
+
+    async searchOrfilter(
+      data = { search: undefined, filterBy: undefined, filterVal: undefined }
+    ) {
+      //console.log(data);
+      await api
+        .getReadyItems(data)
+        .then((result) => {
+          //console.log(result);
+          this.items = [...result.data];
+          this.selected = null;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
   },
   created() {
     this.initPage();
+  },
+  watch: {
+    filtering: {
+      handler(newValue) {
+        this.searchOrfilter({ filterBy: "category", filterVal: newValue });
+
+        // Note: `newValue` will be equal to `oldValue` here
+        // on nested mutations as long as the object itself
+        // hasn't been replaced.
+      },
+      deep: true,
+    },
+    search: {
+      handler(newValue) {
+        this.searchOrfilter({ ...this.filtering, search: newValue });
+
+        // Note: `newValue` will be equal to `oldValue` here
+        // on nested mutations as long as the object itself
+        // hasn't been replaced.
+      },
+      deep: true,
+    },
   },
 };
 </script>

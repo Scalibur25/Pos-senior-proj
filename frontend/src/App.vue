@@ -2,7 +2,7 @@
   <div id="app">
     <nav class="px-4 d-flex align-items-center">
       <div id="essist">ESSIST</div>
-      <router-link to="/store">Storefront</router-link>
+      <router-link to="/">Storefront</router-link>
       <span>|</span>
       <router-link to="/stock">Stock Management</router-link>
       <span>|</span>

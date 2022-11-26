@@ -4,7 +4,11 @@
       <b-row class="search-bar d-flex align-items-center pb-2">
         <b-col cols="8">
           <b-input-group>
-            <b-form-input type="search" placeholder="Search"></b-form-input>
+            <b-form-input
+              v-model="search"
+              type="search"
+              placeholder="Search"
+            ></b-form-input>
             <b-button>
               <span class="d-flex align-self-center material-icons md-24"
                 >search</span
@@ -41,7 +45,7 @@
           </b-table>
         </b-col>
         <b-col cols="4">
-          <div class="preview-order px-3">
+          <div v-if="selected !== null" class="preview-order px-3">
             <div class="d-flex flex-column align-items-center bottom-line py-5">
               <div>ORDER ID: {{ selected.orderId }}</div>
               <div>DATETIME CREATED: {{ toDateString(selected.createAt) }}</div>
@@ -90,7 +94,7 @@
       v-model="modalExportActive"
       title="Export order history"
       @ok="exportOn"
-      hide-footer="true"
+      :hide-footer="true"
       @hide="
         () => {
           exportChoice = {};
@@ -149,7 +153,7 @@
         @hasGenerated="hasGenerated($event)"
         ref="html2Pdf"
       >
-        <section slot="pdf-content">
+        <section v-if="selected !== null" slot="pdf-content">
           <!-- PDF Content Here -->
           <div
             class="html2pdf__page-break mx-5 my-3"
@@ -213,6 +217,7 @@ import VueHtml2pdf from "vue-html2pdf";
 export default {
   data() {
     return {
+      search: "",
       exportChoice: "",
       itemExcel: [],
       itemJson: [],
@@ -304,10 +309,10 @@ export default {
     onRowSelected(items) {
       const id = items[0].orderId;
       this.selected = this.items.filter((e) => {
-        console.log(e);
+        //console.log(e);
         return e.orderId == id;
       })[0];
-      console.log(this.selected);
+      //console.log(this.selected);
     },
     async initPage() {
       await api
@@ -359,10 +364,38 @@ export default {
           console.log(err);
         });
     },
+
+    async searchOrfilter(
+      data = { search: undefined, filterBy: undefined, filterVal: undefined }
+    ) {
+      //console.log(data);
+      await api
+        .getOrder(data)
+        .then((result) => {
+          //console.log(result);
+          this.items = [...result.data];
+          this.selected = null;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
   },
 
   created() {
     this.initPage();
+  },
+  watch: {
+    search: {
+      handler(newValue) {
+        this.searchOrfilter({ search: newValue });
+
+        // Note: `newValue` will be equal to `oldValue` here
+        // on nested mutations as long as the object itself
+        // hasn't been replaced.
+      },
+      deep: true,
+    },
   },
 };
 </script>
